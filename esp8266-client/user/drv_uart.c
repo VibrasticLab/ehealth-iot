@@ -37,6 +37,7 @@
 #include "mem.h"
 #include "os_type.h"
 #include "user_interface.h"
+#include "client.h"
 
 #include "user_config.h"
 
@@ -257,6 +258,7 @@ uart_response(uint8 inChar){
 
     const char cmdlist[]= "commands: "\
             "test "\
+            "http " \
             "sdk "\
             "chip "\
             "when "\
@@ -279,7 +281,7 @@ uart_response(uint8 inChar){
                 uart0_sendStr("What to test?\r\n");
             }
             if(os_strcmp(strReq,"http")==0){
-                os_sprintf(url_req,"http://192.168.4.1:3000/");
+                os_sprintf(url_req,"http://10.124.5.232/iotdata");
                 os_printf("HTTP request to %s\r\n",url_req);
                 tcp_client_get(url_req);
             }
