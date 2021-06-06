@@ -141,7 +141,7 @@ $(FW_BASE):
 flash: $(FW_FILE_1) $(FW_FILE_2)
 	sudo $(ESPTOOL) --port $(ESPPORT) erase_flash
 	sudo $(ESPTOOL) --port $(ESPPORT) write_flash $(BLANK_1_ADDR) $(BLANKBIN) $(INIT_2_ADDR) $(INITBIN) $(BLANK_2_ADDR) $(BLANKBIN)
-	sudo $(ESPTOOL) --port $(ESPPORT) write_flash $(FW_FILE_1_ADDR) $(FW_FILE_1) $(FW_FILE_2_ADDR) $(FW_FILE_2)
+	sudo $(ESPTOOL) --port $(ESPPORT) write_flash  -fs 32m -ff 40m -fm dout $(FW_FILE_1_ADDR) $(FW_FILE_1) $(FW_FILE_2_ADDR) $(FW_FILE_2)
 
 serial:
 	sudo $(MINICOM) -b $(BAUDRATE) -D $(ESPPORT)
