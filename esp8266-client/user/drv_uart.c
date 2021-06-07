@@ -38,6 +38,7 @@
 #include "os_type.h"
 #include "user_interface.h"
 #include "client.h"
+#include <math.h>
 
 #include "user_config.h"
 
@@ -255,6 +256,7 @@ uart_response(uint8 inChar){
     uint8 bootmode;
     char strReq[32];
     char url_req[16];
+    uint8 rnd[5];
 
     const char cmdlist[]= "commands: "\
             "test "\
@@ -281,7 +283,10 @@ uart_response(uint8 inChar){
                 uart0_sendStr("What to test?\r\n");
             }
             if(os_strcmp(strReq,"http")==0){
-                os_sprintf(url_req,"http://10.124.5.232/iotdata");
+                for(i=0;i<5;i++){
+                    rnd[i] = rand() % 20;
+                }
+                os_sprintf(url_req,"http://10.124.5.232/iotdata?devid=esp12f_test&data=%d,%d,%d,%d,%d",rnd[0],rnd[1],rnd[2],rnd[3],rnd[4]);
                 os_printf("HTTP request to %s\r\n",url_req);
                 tcp_client_get(url_req);
             }
