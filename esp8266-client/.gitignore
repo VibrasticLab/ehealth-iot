@@ -1,0 +1,5 @@
+firmware/
+build/
+*.creator.user
+*.cflags
+*.cxxflags

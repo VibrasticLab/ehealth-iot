@@ -65,6 +65,9 @@ CC		:= $(XTENSA_TOOLS_ROOT)/xtensa-lx106-elf-gcc
 AR		:= $(XTENSA_TOOLS_ROOT)/xtensa-lx106-elf-ar
 LD		:= $(XTENSA_TOOLS_ROOT)/xtensa-lx106-elf-gcc
 
+# chip specific options on flashing
+CHIP_OPTS   = -fs 32m -ff 40m -fm dout
+
 
 
 ####
@@ -141,7 +144,7 @@ $(FW_BASE):
 flash: $(FW_FILE_1) $(FW_FILE_2)
 	sudo $(ESPTOOL) --port $(ESPPORT) erase_flash
 	sudo $(ESPTOOL) --port $(ESPPORT) write_flash $(BLANK_1_ADDR) $(BLANKBIN) $(INIT_2_ADDR) $(INITBIN) $(BLANK_2_ADDR) $(BLANKBIN)
-	sudo $(ESPTOOL) --port $(ESPPORT) write_flash  -fs 32m -ff 40m -fm dout $(FW_FILE_1_ADDR) $(FW_FILE_1) $(FW_FILE_2_ADDR) $(FW_FILE_2)
+	sudo $(ESPTOOL) --port $(ESPPORT) write_flash $(CHIP_OPTS) $(FW_FILE_1_ADDR) $(FW_FILE_1) $(FW_FILE_2_ADDR) $(FW_FILE_2)
 
 serial:
 	sudo $(MINICOM) -b $(BAUDRATE) -D $(ESPPORT)
