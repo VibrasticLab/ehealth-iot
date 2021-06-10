@@ -1,14 +1,3 @@
-/*
-              UNKNOWN PUBLIC LICENSE
-
- Copyright (C) 2019 Wira S.T. M.T.
-
- Currently no license applied because author liv in
- Indonesia, a country which doesn't really concern
- about digital content copyright.
-
- */
-
 /**
  * @file    client.c
  * @brief   TCP Client code.
