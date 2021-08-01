@@ -8,30 +8,51 @@ Bluetoothctl GUI using tkinter
 # Imports
 import tkinter as tk
 import subprocess as sp
+from tkinter import font
 
 def btlist():
     """Bluetooth List Routine
     """
-    txtbox.delete('1.0',tk.END)
     mfree = sp.run(["bluetoothctl","--timeout","5","scan","on"],stdout=sp.PIPE,stderr=sp.PIPE).stdout.decode("utf-8")
-    txtbox.insert(tk.END,mfree)
+
+def teslist():
+    """Test ListBox
+    """
 
 sp.run(["bluetoothctl","power","on"],stdout=sp.PIPE,stderr=sp.PIPE)
 
 ## Main Window
 window = tk.Tk()
 window.geometry("480x320")
-window.title("Tk MemFree")
+window.title("Tk Bluetooth")
 
-## Text Box
-txtbox = tk.Text(window,height=15,width=80)
-txtbox.pack()
+## List Box
+lstbox = tk.Listbox(window,height=10,width=40)
+lstbox.pack()
 
-## Text Box Font
-txtbox.config(font=("Liberation Mono",8))
+lstbox.insert(1,"Bread")
+lstbox.insert(2, "Milk")
+lstbox.insert(3, "Meat")
+lstbox.insert(4, "Cheese")
+lstbox.insert(5, "Vegetables")
 
-## Button List
-btnbtlist = tk.Button(window,text="Bluetooth List",command=btlist)
-btnbtlist.pack()
+## Button Frame
+btnfrm = tk.Frame(window)
+
+## Button Bluetooth List
+btnbtlist = tk.Button(btnfrm,text="Bluetooth List",command=btlist)
+btnbtlist.pack(side=tk.LEFT)
+
+## Button Tes List
+btntes = tk.Button(btnfrm,text="Test List",command=teslist)
+btntes.pack(side=tk.LEFT)
+
+btnfrm.pack(expand=True)
+
+## UI Font
+uifont = font.Font(window,family="Liberation Mono",size=16)
+lstbox.config(font=uifont)
+btnbtlist.config(font=uifont)
+btntes.config(font=uifont)
 
 window.mainloop()
