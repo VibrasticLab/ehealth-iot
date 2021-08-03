@@ -13,13 +13,17 @@ from tkinter import font
 def btlist():
     """Bluetooth List Routine
     """
-    mfree = sp.run(["bluetoothctl","--timeout","5","scan","on"],stdout=sp.PIPE,stderr=sp.PIPE).stdout.decode("utf-8")
+    #mfree = sp.run(["bluetoothctl","--timeout","5","scan","on"],stdout=sp.PIPE,stderr=sp.PIPE).stdout.decode("utf-8")
 
 def teslist():
     """Test ListBox
     """
+    lstbox.delete(0,tk.END)
+    strlisteach = strlistbox.split('\n')
+    for i in range(len(strlisteach)):
+        lstbox.insert(i+1,strlisteach[i])
 
-sp.run(["bluetoothctl","power","on"],stdout=sp.PIPE,stderr=sp.PIPE)
+#sp.run(["bluetoothctl","power","on"],stdout=sp.PIPE,stderr=sp.PIPE)
 
 ## Main Window
 window = tk.Tk()
@@ -27,32 +31,39 @@ window.geometry("480x320")
 window.title("Tk Bluetooth")
 
 ## List Box
-lstbox = tk.Listbox(window,height=10,width=40)
-lstbox.pack()
+lstbox = tk.Listbox(window,height=10,width=25)
+lstbox.pack(side=tk.LEFT, fill=tk.BOTH)
 
-lstbox.insert(1,"Bread")
-lstbox.insert(2, "Milk")
-lstbox.insert(3, "Meat")
-lstbox.insert(4, "Cheese")
-lstbox.insert(5, "Vegetables")
+strlistbox = "Jeruk\nJambu\nPisang\nApel\nNanas"
+
+## List Box Scrollbar
+scrlstbox = tk.Scrollbar(window,width=30)
+scrlstbox.pack(side=tk.LEFT,fill=tk.BOTH)
+
+## Scrollbar Movement
+lstbox.config(yscrollcommand=scrlstbox.set)
+scrlstbox.config(command=lstbox.yview)
 
 ## Button Frame
 btnfrm = tk.Frame(window)
 
 ## Button Bluetooth List
-btnbtlist = tk.Button(btnfrm,text="Bluetooth List",command=btlist)
-btnbtlist.pack(side=tk.LEFT)
+btnbtlist = tk.Button(btnfrm,text="  List  ",command=teslist)
+btnbtlist.pack(side=tk.TOP)
 
 ## Button Tes List
-btntes = tk.Button(btnfrm,text="Test List",command=teslist)
-btntes.pack(side=tk.LEFT)
+btntes = tk.Button(btnfrm,text="Connect ",command=btlist)
+btntes.pack(side=tk.BOTTOM)
 
-btnfrm.pack(expand=True)
+btnfrm.pack(side=tk.RIGHT,expand=True)
 
-## UI Font
-uifont = font.Font(window,family="Liberation Mono",size=16)
-lstbox.config(font=uifont)
-btnbtlist.config(font=uifont)
-btntes.config(font=uifont)
+## Text Font
+txtfont = font.Font(window,family="Liberation Mono",size=18)
+lstbox.config(font=txtfont)
+
+## Button Font
+btnfont = font.Font(btnfrm,family="Liberation Mono",size=14)
+btnbtlist.config(font=btnfont)
+btntes.config(font=btnfont)
 
 window.mainloop()
