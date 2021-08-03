@@ -10,60 +10,89 @@ import tkinter as tk
 import subprocess as sp
 from tkinter import font
 
-def btlist():
-    """Bluetooth List Routine
+class BtTk():
+    """Bluetooth Tkinter Ccnnect class
     """
-    #mfree = sp.run(["bluetoothctl","--timeout","5","scan","on"],stdout=sp.PIPE,stderr=sp.PIPE).stdout.decode("utf-8")
 
-def teslist():
-    """Test ListBox
-    """
-    lstbox.delete(0,tk.END)
-    strlisteach = strlistbox.split('\n')
-    for i in range(len(strlisteach)):
-        lstbox.insert(i+1,strlisteach[i])
+    def __init__(self):
+        super(BtTk,self).__init__()
 
-#sp.run(["bluetoothctl","power","on"],stdout=sp.PIPE,stderr=sp.PIPE)
+        #sp.run(["bluetoothctl","power","on"],stdout=sp.PIPE,stderr=sp.PIPE)
 
-## Main Window
-window = tk.Tk()
-window.geometry("480x320")
-window.title("Tk Bluetooth")
+        ## Main Window
+        self.window = tk.Tk()
+        self.window.geometry("480x320")
+        self.window.title("Tk Bluetooth")
+        self.window.config(bg="black")
 
-## List Box
-lstbox = tk.Listbox(window,height=10,width=25)
-lstbox.pack(side=tk.LEFT, fill=tk.BOTH)
+        ## Title Label
+        self.lbltitle = tk.Label(self.window,text="Bluetooth Connect")
+        self.lbltitle.pack(side=tk.TOP)
+        self.lbltitle.config(bg='black',fg='white')
 
-strlistbox = "Jeruk\nJambu\nPisang\nApel\nNanas"
+        ## Status Label
+        self.lblstatus = tk.Label(self.window,text="Status: Idle")
+        self.lblstatus.pack(side=tk.BOTTOM)
+        self.lblstatus.config(bg='black',fg='white')
 
-## List Box Scrollbar
-scrlstbox = tk.Scrollbar(window,width=30)
-scrlstbox.pack(side=tk.LEFT,fill=tk.BOTH)
+        ## List Box
+        self.lstbox = tk.Listbox(self.window,height=10,width=25)
+        self.lstbox.pack(side=tk.LEFT, fill=tk.BOTH)
+        self.lstbox.config(bg='black',fg='white')
 
-## Scrollbar Movement
-lstbox.config(yscrollcommand=scrlstbox.set)
-scrlstbox.config(command=lstbox.yview)
+        self.strlistbox = "Jeruk\nJambu\nPisang\nApel\nNanas"
 
-## Button Frame
-btnfrm = tk.Frame(window)
+        ## List Box Scrollbar
+        self.scrlstbox = tk.Scrollbar(self.window,width=30)
+        self.scrlstbox.pack(side=tk.LEFT,fill=tk.BOTH)
+        self.scrlstbox.config(bg='black')
 
-## Button Bluetooth List
-btnbtlist = tk.Button(btnfrm,text="  List  ",command=teslist)
-btnbtlist.pack(side=tk.TOP)
+        ## Scrollbar Movement
+        self.lstbox.config(yscrollcommand=self.scrlstbox.set)
+        self.scrlstbox.config(command=self.lstbox.yview)
 
-## Button Tes List
-btntes = tk.Button(btnfrm,text="Connect ",command=btlist)
-btntes.pack(side=tk.BOTTOM)
+        ## Button Frame
+        self.btnfrm = tk.Frame(self.window)
 
-btnfrm.pack(side=tk.RIGHT,expand=True)
+        ## Button Bluetooth List
+        self.btnbtlist = tk.Button(self.btnfrm,text="  List  ",command=self.teslist)
+        self.btnbtlist.pack(side=tk.TOP)
+        self.btnbtlist.config(bg='black',fg='white')
 
-## Text Font
-txtfont = font.Font(window,family="Liberation Mono",size=18)
-lstbox.config(font=txtfont)
+        ## Button Tes List
+        self.btntes = tk.Button(self.btnfrm,text="Connect ",command=self.btlist)
+        self.btntes.pack(side=tk.BOTTOM)
+        self.btntes.config(bg='black',fg='white')
 
-## Button Font
-btnfont = font.Font(btnfrm,family="Liberation Mono",size=14)
-btnbtlist.config(font=btnfont)
-btntes.config(font=btnfont)
+        self.btnfrm.pack(side=tk.RIGHT,expand=True)
+        self.btnfrm.config(bg='black')
 
-window.mainloop()
+        ## Text Font
+        txtfont = font.Font(self.window,family="Liberation Mono",size=18)
+        self.lstbox.config(font=txtfont)
+
+        ## Button Font
+        btnfont = font.Font(self.btnfrm,family="Liberation Mono",size=14)
+        self.lbltitle.config(font=btnfont)
+        self.lblstatus.config(font=btnfont)
+        self.btnbtlist.config(font=btnfont)
+        self.btntes.config(font=btnfont)
+
+        ## Main Loop
+        self.window.mainloop()
+
+    def btlist(self):
+        """Bluetooth List Routine
+        """
+        #mfree = sp.run(["bluetoothctl","--timeout","5","scan","on"],stdout=sp.PIPE,stderr=sp.PIPE).stdout.decode("utf-8")
+
+    def teslist(self):
+        """Test ListBox
+        """
+        self.lstbox.delete(0,tk.END)
+        strlisteach = self.strlistbox.split('\n')
+        for i in range(len(strlisteach)):
+            self.lstbox.insert(i+1,strlisteach[i])
+
+if __name__ == "__main__":
+    bttk = BtTk()
