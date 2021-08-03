@@ -17,7 +17,7 @@ class BtTk():
     def __init__(self):
         super(BtTk,self).__init__()
 
-        #sp.run(["bluetoothctl","power","on"],stdout=sp.PIPE,stderr=sp.PIPE)
+        sp.run(["bluetoothctl","power","on"],stdout=sp.PIPE,stderr=sp.PIPE)
 
         ## Main Window
         self.window = tk.Tk()
@@ -84,7 +84,11 @@ class BtTk():
     def btlist(self):
         """Bluetooth List Routine
         """
-        #mfree = sp.run(["bluetoothctl","--timeout","5","scan","on"],stdout=sp.PIPE,stderr=sp.PIPE).stdout.decode("utf-8")
+        self.lstbox.delete(0,tk.END)
+        mfree = sp.run(["bluetoothctl","--timeout","5","scan","on"],stdout=sp.PIPE,stderr=sp.PIPE).stdout.decode("utf-8")
+        eachmfree = mfree.split('\n')
+        for i in range(len(eachmfree)):
+            self.lstbox.insert(i+1,eachmfree[i])
 
     def teslist(self):
         """Test ListBox
