@@ -17,6 +17,7 @@ class BtTk():
     def __init__(self):
         super(BtTk,self).__init__()
 
+        ## Turn on Bluetooth Device
         sp.run(["bluetoothctl","power","on"],stdout=sp.PIPE,stderr=sp.PIPE)
 
         ## Main Window
@@ -40,35 +41,39 @@ class BtTk():
         self.lstbox.pack(side=tk.LEFT, fill=tk.BOTH)
         self.lstbox.config(bg='black',fg='white')
 
-        self.strlistbox = "Jeruk\nJambu\nPisang\nApel\nNanas"
+        ## List Box V-Scrollbar
+        self.vscrlstbox = tk.Scrollbar(self.window,width=30)
+        self.vscrlstbox.pack(side=tk.LEFT, fill=tk.BOTH)
+        self.vscrlstbox.config(bg='black')
 
-        ## List Box Scrollbar
-        self.scrlstbox = tk.Scrollbar(self.window,width=30)
-        self.scrlstbox.pack(side=tk.LEFT,fill=tk.BOTH)
-        self.scrlstbox.config(bg='black')
-
-        ## Scrollbar Movement
-        self.lstbox.config(yscrollcommand=self.scrlstbox.set)
-        self.scrlstbox.config(command=self.lstbox.yview)
+        ## V-Scrollbar Movement
+        self.lstbox.config(yscrollcommand=self.vscrlstbox.set)
+        self.vscrlstbox.config(command=self.lstbox.yview)
 
         ## Button Frame
         self.btnfrm = tk.Frame(self.window)
 
         ## Button Bluetooth List
-        self.btnbtlist = tk.Button(self.btnfrm,text="  List  ",command=self.teslist)
-        self.btnbtlist.pack(side=tk.TOP)
+        self.btnbtlist = tk.Button(self.btnfrm,text="  List  ",command=self.btlist)
+        self.btnbtlist.pack()
         self.btnbtlist.config(bg='black',fg='white')
 
-        ## Button Tes List
-        self.btntes = tk.Button(self.btnfrm,text="Connect ",command=self.btlist)
-        self.btntes.pack(side=tk.BOTTOM)
+        ## Button Bluetooth Connect
+        self.btntes = tk.Button(self.btnfrm,text="Connect ",command=self.teslist)
+        self.btntes.pack()
         self.btntes.config(bg='black',fg='white')
 
+        ## Button App Quit
+        self.btnquit = tk.Button(self.btnfrm,text="  Quit  ",command=self.window.destroy)
+        self.btnquit.pack()
+        self.btnquit.config(bg='black',fg='white')
+
+        ## Pack Button Frame
         self.btnfrm.pack(side=tk.RIGHT,expand=True)
         self.btnfrm.config(bg='black')
 
         ## Text Font
-        txtfont = font.Font(self.window,family="Liberation Mono",size=18)
+        txtfont = font.Font(self.window,family="Liberation Mono",size=16)
         self.lstbox.config(font=txtfont)
 
         ## Button Font
@@ -77,6 +82,7 @@ class BtTk():
         self.lblstatus.config(font=btnfont)
         self.btnbtlist.config(font=btnfont)
         self.btntes.config(font=btnfont)
+        self.btnquit.config(font=btnfont)
 
         ## Main Loop
         self.window.mainloop()
@@ -84,19 +90,28 @@ class BtTk():
     def btlist(self):
         """Bluetooth List Routine
         """
+        strnew = "NEW"
+
+        self.lblstatus.config(text="Searching")
         self.lstbox.delete(0,tk.END)
+
+        ## Get Nearby Device
         mfree = sp.run(["bluetoothctl","--timeout","5","scan","on"],stdout=sp.PIPE,stderr=sp.PIPE).stdout.decode("utf-8")
+
+        ## Add Device List to ListBox
         eachmfree = mfree.split('\n')
         for i in range(len(eachmfree)):
-            self.lstbox.insert(i+1,eachmfree[i])
+            #self.lstbox.insert(i+1,eachmfree[i])
+            if strnew in eachmfree[i]:
+                bteach = eachmfree[i].split(" ")
+                if len(bteach) > 4:
+                    self.lstbox.insert(i+1, "%s %s" % (bteach[3],bteach[4]))
+                else:
+                    self.lstbox.insert(i+1, "%s" % (bteach[3]))
+        self.lblstatus.config(text="Finished")
 
     def teslist(self):
         """Test ListBox
         """
-        self.lstbox.delete(0,tk.END)
-        strlisteach = self.strlistbox.split('\n')
-        for i in range(len(strlisteach)):
-            self.lstbox.insert(i+1,strlisteach[i])
-
 if __name__ == "__main__":
     bttk = BtTk()
