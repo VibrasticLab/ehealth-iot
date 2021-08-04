@@ -15,14 +15,13 @@ class BtTk():
     """Bluetooth Tkinter Ccnnect class
     """
 
-    btdevidlist = []
     play = None
 
     def __init__(self):
         super(BtTk,self).__init__()
 
         ## Turn on Bluetooth Device
-        #sp.run(["bluetoothctl","power","on"],stdout=sp.PIPE,stderr=sp.PIPE)
+        sp.run(["bluetoothctl","power","on"],stdout=sp.PIPE,stderr=sp.PIPE)
 
         ## Main Window
         self.window = tk.Tk()
@@ -40,19 +39,35 @@ class BtTk():
         self.lblstatus.pack(side=tk.BOTTOM)
         self.lblstatus.config(bg='black',fg='white')
 
-        ## List Box
-        self.lstbox = tk.Listbox(self.window,height=10,width=25)
-        self.lstbox.pack(side=tk.LEFT, fill=tk.BOTH)
-        self.lstbox.config(bg='black',fg='white')
+        ## List Box Frame
+        self.lstfrm = tk.Frame(self.window)
+
+        ## List Box H-Scrollbar
+        self.hscrlstbox = tk.Scrollbar(self.lstfrm,width=30,orient="horizontal")
+        self.hscrlstbox.pack(side=tk.BOTTOM,fill=tk.BOTH)
+        self.hscrlstbox.config(bg='black')
 
         ## List Box V-Scrollbar
-        self.vscrlstbox = tk.Scrollbar(self.window,width=30)
-        self.vscrlstbox.pack(side=tk.LEFT, fill=tk.BOTH)
+        self.vscrlstbox = tk.Scrollbar(self.lstfrm,width=30)
+        self.vscrlstbox.pack(side=tk.RIGHT, fill=tk.BOTH)
         self.vscrlstbox.config(bg='black')
+
+        ## List Box
+        self.lstbox = tk.Listbox(self.lstfrm,height=10,width=25)
+        self.lstbox.pack(side=tk.LEFT, fill=tk.BOTH)
+        self.lstbox.config(bg='black',fg='white')
 
         ## V-Scrollbar Movement
         self.lstbox.config(yscrollcommand=self.vscrlstbox.set)
         self.vscrlstbox.config(command=self.lstbox.yview)
+
+        ## H-Scrollbar Movement
+        self.lstbox.config(xscrollcommand=self.hscrlstbox.set)
+        self.hscrlstbox.config(command=self.lstbox.xview)
+
+        ## Pack Listbox Frame
+        self.lstfrm.pack(side=tk.LEFT,expand=True)
+        self.lstfrm.config(bg='black')
 
         ## Button Frame
         self.btnfrm = tk.Frame(self.window)
@@ -87,7 +102,7 @@ class BtTk():
         self.btnfrm.config(bg='black')
 
         ## Text Font
-        txtfont = font.Font(self.window,family="Liberation Mono",size=16)
+        txtfont = font.Font(self.window,family="Liberation Mono",size=18)
         self.lstbox.config(font=txtfont)
 
         ## Button Font
@@ -107,8 +122,6 @@ class BtTk():
         """Bluetooth List Routine
         """
         strnew = "NEW"
-        strempty = "KOSONG"
-        self.btdevidlist.clear()
 
         self.lblstatus.config(text="Searching")
         self.lstbox.delete(0,tk.END)
@@ -122,22 +135,21 @@ class BtTk():
         for i in range(len(eachmfree)):
             if strnew in eachmfree[i]:
                 bteach = eachmfree[i].split(" ")
-                self.btdevidlist += [bteach[2]]
                 if len(bteach) > 4:
-                    self.lstbox.insert(i+1, "%s %s" % (bteach[3],bteach[4]))
+                    self.lstbox.insert(i+1, "%s|%s-%s" % (bteach[2],bteach[3],bteach[4]))
                 else:
-                    self.lstbox.insert(i+1, "%s" % (bteach[3]))
-            else:
-                self.btdevidlist += [strempty]
+                    self.lstbox.insert(i+1, "%s|%s" % (bteach[2],bteach[3]))
         self.lblstatus.config(text="Finished")
 
     def btconnect(self):
         """Connect Bluetooth
         """
-        idx = self.lstbox.curselection()[0]
-        self.lblstatus.config(text="Selected:" + self.btdevidlist[idx])
+        strselect = self.lstbox.get(tk.ACTIVE)
+        btid = strselect.split('|')[0]
+        self.lblstatus.config(text="Selected:" + btid)
 
     def playstart(self):
+        self.playstop()
         self.play = sp.Popen(["play", "-q", "~/arcv-ost.mp3"],stdout=None,stderr=None)
 
     def playstop(self):
@@ -145,8 +157,7 @@ class BtTk():
             self.play.terminate()
 
     def appquit(self):
-        if not (self.play is None):
-            self.play.terminate()
+        self.playstop()
         self.window.destroy()
 
 if __name__ == "__main__":
