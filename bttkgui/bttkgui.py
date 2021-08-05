@@ -21,6 +21,7 @@ class BtTk():
     """
 
     btdeviceids = []
+    btpairedids = []
     play = None
 
     def __init__(self):
@@ -145,6 +146,30 @@ class BtTk():
                 if not scan_result[i]['mac_address'] in self.btdeviceids:
                     self.btdeviceids.append(scan_result[i]['mac_address'])
                     self.lstbox.insert(j+1, "%s" % (scan_result[i]['name']))
+                    j = j + 1
+
+        self.lblstatus.config(text="Finished")
+
+    def btpaired(self):
+        """Bluetooth List Routine
+        """
+
+        self.lblstatus.config(text="Paired")
+        self.lstbox.delete(0,tk.END)
+        self.btpairedids.clear()
+
+        pair_result = self.btctl.get_paired_devices()
+
+        j = 0
+        for i in range(len(pair_result)):
+            if j == 0:
+                self.btpairedids.append(pair_result[i]['mac_address'])
+                self.lstbox.insert(j+1, "%s" % (pair_result[i]['name']))
+                j = j + 1
+            else:
+                if not pair_result[i]['mac_address'] in self.btpairedids:
+                    self.btpairedids.append(pair_result[i]['mac_address'])
+                    self.lstbox.insert(j+1, "%s" % (pair_result[i]['name']))
                     j = j + 1
 
         self.lblstatus.config(text="Finished")

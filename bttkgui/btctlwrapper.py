@@ -16,8 +16,8 @@ class BluetoothctlWrapper:
     def __init__(self):
         """ Start Bluetoothctl process """
 
-        #subprocess.check_output("rfkill unblock bluetooth",shell=True)
-        subprocess.check_output("bluetoothctl power on",shell=True)
+        out = subprocess.check_output("bluetoothctl power on",shell=True)
+        out = subprocess.check_output("bluetoothctl agent on",shell=True)
         self.child = pexpect.spawn("bluetoothctl",echo=False)
 
     def get_output(self,command,pause=0):
@@ -48,6 +48,14 @@ class BluetoothctlWrapper:
 
         try:
             out = self.get_output("scan on")
+        except BluetoothctlError:
+            return None
+
+    def stop_scan(self):
+        """ Stop bluetooth scanning process"""
+
+        try:
+            out = self.get_output("scan off")
         except BluetoothctlError:
             return None
 
