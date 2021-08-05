@@ -20,7 +20,6 @@ class BtTk():
     """Bluetooth Tkinter Ccnnect class
     """
 
-    exampleresult = [{'mac_address': '66:23:AC:DD:09:CE', 'name': '66-23-AC-DD-09-CE'}, {'mac_address': '48:BB:B8:09:2C:B9', 'name': '48-BB-B8-09-2C-B9'}, {'mac_address': '73:A1:9C:6B:34:68', 'name': '73-A1-9C-6B-34-68'}, {'mac_address': '2C:41:A1:70:B9:2A', 'name': 'LE-Bose Revolve+ SoundLink'}, {'mac_address': '6C:71:D9:2D:D6:92', 'name': 'archmate'}, {'mac_address': '66:23:AC:DD:09:CE', 'name': '66-23-AC-DD-09-CE'}, {'mac_address': '48:BB:B8:09:2C:B9', 'name': '48-BB-B8-09-2C-B9'}, {'mac_address': '73:A1:9C:6B:34:68', 'name': '73-A1-9C-6B-34-68'}, {'mac_address': '2C:41:A1:70:B9:2A', 'name': 'LE-Bose Revolve+ SoundLink'}, {'mac_address': '6C:71:D9:2D:D6:92', 'name': 'archmate'}]
     btdeviceids = []
     play = None
 
@@ -132,20 +131,20 @@ class BtTk():
         self.lstbox.delete(0,tk.END)
         self.btdeviceids.clear()
 
-        #self.btctl.start_scan()
-        #time.sleep(10)
-        #print(self.btctl.get_discoverable_devices())
+        self.btctl.start_scan()
+        time.sleep(10)
+        scan_result = self.btctl.get_discoverable_devices()
 
         j = 0
-        for i in range(len(self.exampleresult)):
+        for i in range(len(scan_result)):
             if j == 0:
-                self.btdeviceids.append(self.exampleresult[i]['mac_address'])
-                self.lstbox.insert(j+1, "%s" % (self.exampleresult[i]['name']))
+                self.btdeviceids.append(scan_result[i]['mac_address'])
+                self.lstbox.insert(j+1, "%s" % (scan_result[i]['name']))
                 j = j + 1
             else:
-                if not self.exampleresult[i]['mac_address'] in self.btdeviceids:
-                    self.btdeviceids.append(self.exampleresult[i]['mac_address'])
-                    self.lstbox.insert(j+1, "%s" % (self.exampleresult[i]['name']))
+                if not scan_result[i]['mac_address'] in self.btdeviceids:
+                    self.btdeviceids.append(scan_result[i]['mac_address'])
+                    self.lstbox.insert(j+1, "%s" % (scan_result[i]['name']))
                     j = j + 1
 
         self.lblstatus.config(text="Finished")
@@ -163,7 +162,7 @@ class BtTk():
 
     def playstart(self):
         self.playstop()
-        self.play = sp.Popen(["play", "-q", "~/arcv-ost.mp3"],stdout=None,stderr=None)
+        self.play = sp.Popen(["play", "-q", "-v", "0.05", "~/vrains-ed.mp3"],stdout=None,stderr=None)
 
     def playstop(self):
         if not (self.play is None):

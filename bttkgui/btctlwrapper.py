@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from codecs import encode
 import sys
 import time
 import pexpect
@@ -113,6 +112,62 @@ class BluetoothctlWrapper:
         paired = self.get_paired_devices()
 
         return [d for d in available if d not in paired]
+
+    def pair(self,mac_address):
+        """ Try to pair with a device by mac_address"""
+
+        try:
+            out = self.get_output("pair "+mac_address,4)
+        except BluetoothctlError:
+            return None
+        else:
+            res = self.child.expect(["Failed to pair", "Pairing successful", pexpect.EOF])
+            success = True if res == 1 else False
+            return success
+
+    def trust(self,mac_address):
+        """ Try to mark trust to a device by mac_address"""
+
+        try:
+            out = self.get_output("trust "+mac_address,1)
+        except BluetoothctlError:
+            return None
+
+    def remove(self,mac_address):
+        """ Remove a paired device by mac_address"""
+
+        try:
+            out = self.get_output("remove "+mac_address,3)
+        except BluetoothctlError:
+            return None
+        else:
+            res = self.child.expect(["not available","Device has been removed",pexpect.EOF])
+            success = True if res == 1 else False
+            return success
+
+    def connect(self,mac_address):
+        """ Try to connect to a device by mac_address"""
+
+        try:
+            out = self.get_output("connect "+mac_address,2)
+        except BluetoothctlError:
+            return None
+        else:
+            res = self.child.expect(["Failed to connect", "Connection successful", pexpect.EOF])
+            success = True if res == 1 else False
+            return success
+
+    def disconnect(self,mac_address):
+        """ Try to disconnect a device by mac_address"""
+
+        try:
+            out = self.get_output("disconnect "+mac_address,2)
+        except BluetoothctlError:
+            return None
+        else:
+            res = self.child.expect(["Failed to disconnect","Successful disconnected",pexpect.EOF])
+            success = True if res == 1 else False
+            return success
 
 if __name__ == "__main__":
     btctl  = BluetoothctlWrapper()
