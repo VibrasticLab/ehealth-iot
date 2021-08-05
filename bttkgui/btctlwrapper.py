@@ -40,7 +40,7 @@ class BluetoothctlWrapper:
         """ Make discoverable"""
 
         try:
-            self.get_output("discoverable on")
+            out = self.get_output("discoverable on")
         except BluetoothctlError:
             return None
 
@@ -48,7 +48,7 @@ class BluetoothctlWrapper:
         """ Start bluetooth scanning process."""
 
         try:
-            self.get_output("scan on")
+            out = self.get_output("scan on")
         except BluetoothctlError:
             return None
 
