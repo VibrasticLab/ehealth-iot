@@ -5,11 +5,16 @@
 Bluetoothctl GUI using tkinter
 """
 
-# Imports
-import time as tm
+# Imports system libraries
+import sys
+import time
 import tkinter as tk
 import subprocess as sp
 from tkinter import font
+
+# Imports local libraries
+sys.path.append(".")
+from btctlwrapper import BluetoothctlWrapper
 
 class BtTk():
     """Bluetooth Tkinter Ccnnect class
@@ -20,8 +25,7 @@ class BtTk():
     def __init__(self):
         super(BtTk,self).__init__()
 
-        ## Turn on Bluetooth Device
-        sp.run(["bluetoothctl","power","on"],stdout=sp.PIPE,stderr=sp.PIPE)
+        self.btctl = BluetoothctlWrapper()
 
         ## Main Window
         self.window = tk.Tk()
@@ -121,24 +125,14 @@ class BtTk():
     def btlist(self):
         """Bluetooth List Routine
         """
-        strnew = "NEW"
 
         self.lblstatus.config(text="Searching")
         self.lstbox.delete(0,tk.END)
-        tm.sleep(1)
 
-        ## Get Nearby Device
-        mfree = sp.run(["bluetoothctl","--timeout","3","scan","on"],stdout=sp.PIPE,stderr=sp.PIPE).stdout.decode("utf-8")
+        self.btctl.start_scan()
+        time.sleep(10)
+        print(self.btctl.get_discoverable_devices())
 
-        ## Add Device List to ListBox
-        eachmfree = mfree.split('\n')
-        for i in range(len(eachmfree)):
-            if strnew in eachmfree[i]:
-                bteach = eachmfree[i].split(" ")
-                if len(bteach) > 4:
-                    self.lstbox.insert(i+1, "%s|%s-%s" % (bteach[2],bteach[3],bteach[4]))
-                else:
-                    self.lstbox.insert(i+1, "%s|%s" % (bteach[2],bteach[3]))
         self.lblstatus.config(text="Finished")
 
     def btconnect(self):
