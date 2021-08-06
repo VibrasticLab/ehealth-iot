@@ -14,12 +14,12 @@ class BluetoothctlWrapper:
 
     def __init__(self):
         """ Start Bluetoothctl process """
- 
+
         out = subprocess.check_output("bluetoothctl power on",shell=True)
         out = subprocess.check_output("bluetoothctl agent on",shell=True)
         self.child = pexpect.spawn("bluetoothctl",echo=False)
 
-    def get_output(self,command,pause=0):
+    def get_output(self,command,pause=1):
         """ Run a command in bluetoothctl prompt.
         Return output as list of lines
         """
@@ -46,15 +46,7 @@ class BluetoothctlWrapper:
         """ Start bluetooth scanning process."""
 
         try:
-            out = self.get_output("scan on",6)
-        except BluetoothctlError:
-            return None
-
-    def stop_scan(self):
-        """ Stop bluetooth scanning process"""
-
-        try:
-            out = self.get_output("scan off")
+            out = self.get_output("scan on",5)
         except BluetoothctlError:
             return None
 
@@ -124,7 +116,7 @@ class BluetoothctlWrapper:
         """ Try to pair with a device by mac_address"""
 
         try:
-            out = self.get_output("pair "+mac_address,4)
+            out = self.get_output("pair "+mac_address)
         except BluetoothctlError:
             return None
         else:
@@ -136,7 +128,7 @@ class BluetoothctlWrapper:
         """ Try to mark trust to a device by mac_address"""
 
         try:
-            out = self.get_output("trust "+mac_address,1)
+            out = self.get_output("trust "+mac_address)
         except BluetoothctlError:
             return None
 
@@ -144,7 +136,7 @@ class BluetoothctlWrapper:
         """ Remove a paired device by mac_address"""
 
         try:
-            out = self.get_output("remove "+mac_address,3)
+            out = self.get_output("remove "+mac_address)
         except BluetoothctlError:
             return None
         else:
@@ -168,7 +160,7 @@ class BluetoothctlWrapper:
         """ Try to disconnect a device by mac_address"""
 
         try:
-            out = self.get_output("disconnect "+mac_address,2)
+            out = self.get_output("disconnect "+mac_address)
         except BluetoothctlError:
             return None
         else:
@@ -182,4 +174,4 @@ if __name__ == "__main__":
     btctl.start_scan()
     print("scanning in 10s")
     time.sleep(5)
-    print(btctl.get_discoverable_devices())
+    print(btctl.get_available_devices())

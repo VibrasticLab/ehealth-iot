@@ -29,10 +29,6 @@ class BtTk():
         ## Bluetoothctl Wrapper object
         self.btctl = BluetoothctlWrapper()
 
-        ## Start Pulseaudio if not yet
-        if not self.isrunning("pulseaudio"):
-            sp.Popen(["pulseaudio","--start"],stdout=None, stderr=None, bufsize=-1)
-
         ## Main Window
         self.window = tk.Tk()
         self.window.geometry("480x320")
@@ -40,12 +36,12 @@ class BtTk():
         self.window.config(bg="black")
 
         ## Title Label
-        self.lbltitle = tk.Label(self.window,text="Bluetooth Connect")
+        self.lbltitle = tk.Label(self.window,text="Bluetooth Audio Connect")
         self.lbltitle.pack(side=tk.TOP)
         self.lbltitle.config(bg='black',fg='white')
 
         ## Status Label
-        self.lblstatus = tk.Label(self.window,text="Status: Idle")
+        self.lblstatus = tk.Label(self.window,text="Bluetooth Started")
         self.lblstatus.pack(side=tk.BOTTOM)
         self.lblstatus.config(bg='black',fg='white')
 
@@ -97,15 +93,15 @@ class BtTk():
         self.btnbtlist.pack()
         self.btnbtlist.config(bg='black',fg='white')
 
-        ## Button Bluetooth Connect
-        self.btnconn = tk.Button(self.btnfrm,text="Connect ",command=self.btconnect)
-        self.btnconn.pack()
-        self.btnconn.config(bg='black',fg='white')
-
         ## Button Bluetooth Paired
         self.btnpair = tk.Button(self.btnfrm,text="Paired",command=self.btpaired)
         self.btnpair.pack()
         self.btnpair.config(bg='black',fg='white')
+
+        ## Button Bluetooth Connect
+        self.btnconn = tk.Button(self.btnfrm,text="Connect ",command=self.btconnect)
+        self.btnconn.pack()
+        self.btnconn.config(bg='black',fg='white')
 
         ## Button App Quit
         self.btnquit = tk.Button(self.btnfrm,text="  Quit  ",command=self.appquit)
@@ -127,8 +123,8 @@ class BtTk():
         self.btnplay.config(font=btnfont)
         self.btnstop.config(font=btnfont)
         self.btnbtlist.config(font=btnfont)
-        self.btnconn.config(font=btnfont)
         self.btnpair.config(font=btnfont)
+        self.btnconn.config(font=btnfont)
         self.btnquit.config(font=btnfont)
 
         ## Main Loop
@@ -154,18 +150,11 @@ class BtTk():
         self.btdeviceids.clear()
 
         self.btctl.start_scan()
-        scan_result = self.btctl.get_discoverable_devices()
+        scan_result = self.btctl.get_available_devices()
 
-        j = 0
         for i in range(len(scan_result)):
-            if j == 0:
-                self.btdeviceids.append(scan_result[i]['mac_address'])
-                self.lstbox.insert(j+1, "%s" % (scan_result[i]['name']))
-            else:
-                if not scan_result[i]['mac_address'] in self.btdeviceids:
-                    self.btdeviceids.append(scan_result[i]['mac_address'])
-                    self.lstbox.insert(j+1, "%s" % (scan_result[i]['name']))
-            j = j + 1
+            self.btdeviceids.append(scan_result[i]['mac_address'])
+            self.lstbox.insert(i+1,"%s" % (scan_result[i]['name']))
 
         self.lblstatus.config(text="Finished")
 
@@ -193,6 +182,10 @@ class BtTk():
                 idselect = self.lstbox.curselection()[0]
                 if self.btdeviceids[idselect]:
                     self.lblstatus.config(text="Address: " + self.btdeviceids[idselect])
+
+                    sp.Popen(["pulseaudio","-k"],stdout=None, stderr=None, bufsize=-1)
+                    if not self.isrunning("pulseaudio"):
+                        sp.Popen(["pulseaudio","--start"],stdout=None, stderr=None, bufsize=-1)
 
                     btdevid = self.btdeviceids[idselect]
                     self.btctl.pair(btdevid)
