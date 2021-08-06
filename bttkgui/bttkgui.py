@@ -8,6 +8,7 @@ Bluetoothctl GUI using tkinter
 # Imports system libraries
 import sys
 import time
+import subprocess
 import tkinter as tk
 import subprocess as sp
 from tkinter import font
@@ -94,9 +95,14 @@ class BtTk():
         self.btnbtlist.config(bg='black',fg='white')
 
         ## Button Bluetooth Connect
-        self.btntes = tk.Button(self.btnfrm,text="Connect ",command=self.btconnect)
-        self.btntes.pack()
-        self.btntes.config(bg='black',fg='white')
+        self.btnconn = tk.Button(self.btnfrm,text="Connect ",command=self.btconnect)
+        self.btnconn.pack()
+        self.btnconn.config(bg='black',fg='white')
+
+        ## Button Bluetooth Paired
+        self.btnpair = tk.Button(self.btnfrm,text="Paired",command=self.btpaired)
+        self.btnpair.pack()
+        self.btnpair.config(bg='black',fg='white')
 
         ## Button App Quit
         self.btnquit = tk.Button(self.btnfrm,text="  Quit  ",command=self.appquit)
@@ -118,7 +124,8 @@ class BtTk():
         self.btnplay.config(font=btnfont)
         self.btnstop.config(font=btnfont)
         self.btnbtlist.config(font=btnfont)
-        self.btntes.config(font=btnfont)
+        self.btnconn.config(font=btnfont)
+        self.btnpair.config(font=btnfont)
         self.btnquit.config(font=btnfont)
 
         ## Main Loop
@@ -133,7 +140,7 @@ class BtTk():
         self.btdeviceids.clear()
 
         self.btctl.start_scan()
-        time.sleep(10)
+        time.sleep(5)
         scan_result = self.btctl.get_discoverable_devices()
 
         j = 0
@@ -182,6 +189,15 @@ class BtTk():
                 idselect = self.lstbox.curselection()[0]
                 if self.btdeviceids[idselect]:
                     self.lblstatus.config(text="Address: " + self.btdeviceids[idselect])
+                    
+                    btdevid = self.btdeviceids[idselect]
+                    self.btctl.pair(btdevid)
+
+                    out = subprocess.check_output("pulseaudio -k",shell=True)
+                    out = subprocess.check_output("pulseaudio --start",shell=True)
+                    self.btctl.connect(btdevid)
+
+                    self.btctl.trust(btdevid)
         else:
             self.lblstatus.config(text="List First")
 

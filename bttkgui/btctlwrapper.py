@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import sys
 import time
 import pexpect
 import subprocess
@@ -15,7 +14,7 @@ class BluetoothctlWrapper:
 
     def __init__(self):
         """ Start Bluetoothctl process """
-
+ 
         out = subprocess.check_output("bluetoothctl power on",shell=True)
         out = subprocess.check_output("bluetoothctl agent on",shell=True)
         self.child = pexpect.spawn("bluetoothctl",echo=False)
