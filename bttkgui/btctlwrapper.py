@@ -46,7 +46,7 @@ class BluetoothctlWrapper:
         """ Start bluetooth scanning process."""
 
         try:
-            out = self.get_output("scan on")
+            out = self.get_output("scan on",6)
         except BluetoothctlError:
             return None
 
@@ -181,5 +181,5 @@ if __name__ == "__main__":
     print("Start Scanning")
     btctl.start_scan()
     print("scanning in 10s")
-    time.sleep(10)
+    time.sleep(5)
     print(btctl.get_discoverable_devices())

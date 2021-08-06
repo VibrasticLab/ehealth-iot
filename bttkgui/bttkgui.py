@@ -7,8 +7,7 @@ Bluetoothctl GUI using tkinter
 
 # Imports system libraries
 import sys
-import time
-import subprocess
+import psutil
 import tkinter as tk
 import subprocess as sp
 from tkinter import font
@@ -22,13 +21,17 @@ class BtTk():
     """
 
     btdeviceids = []
-    btpairedids = []
     play = None
 
     def __init__(self):
         super(BtTk,self).__init__()
 
+        ## Bluetoothctl Wrapper object
         self.btctl = BluetoothctlWrapper()
+
+        ## Start Pulseaudio if not yet
+        if not self.isrunning("pulseaudio"):
+            sp.Popen(["pulseaudio","--start"],stdout=None, stderr=None, bufsize=-1)
 
         ## Main Window
         self.window = tk.Tk()
@@ -131,6 +134,17 @@ class BtTk():
         ## Main Loop
         self.window.mainloop()
 
+    def isrunning(self,process):
+        """ Check if a process name running"""
+
+        for proc in psutil.process_iter():
+            try:
+                if process.lower() in proc.name().lower():
+                    return True
+            except (psutil.NoSuchProcess,psutil.AccessDenied,psutil.ZombieProcess):
+                pass
+        return False
+
     def btlist(self):
         """Bluetooth List Routine
         """
@@ -140,7 +154,6 @@ class BtTk():
         self.btdeviceids.clear()
 
         self.btctl.start_scan()
-        time.sleep(5)
         scan_result = self.btctl.get_discoverable_devices()
 
         j = 0
@@ -148,12 +161,11 @@ class BtTk():
             if j == 0:
                 self.btdeviceids.append(scan_result[i]['mac_address'])
                 self.lstbox.insert(j+1, "%s" % (scan_result[i]['name']))
-                j = j + 1
             else:
                 if not scan_result[i]['mac_address'] in self.btdeviceids:
                     self.btdeviceids.append(scan_result[i]['mac_address'])
                     self.lstbox.insert(j+1, "%s" % (scan_result[i]['name']))
-                    j = j + 1
+            j = j + 1
 
         self.lblstatus.config(text="Finished")
 
@@ -163,21 +175,13 @@ class BtTk():
 
         self.lblstatus.config(text="Paired")
         self.lstbox.delete(0,tk.END)
-        self.btpairedids.clear()
+        self.btdeviceids.clear()
 
         pair_result = self.btctl.get_paired_devices()
 
-        j = 0
         for i in range(len(pair_result)):
-            if j == 0:
-                self.btpairedids.append(pair_result[i]['mac_address'])
-                self.lstbox.insert(j+1, "%s" % (pair_result[i]['name']))
-                j = j + 1
-            else:
-                if not pair_result[i]['mac_address'] in self.btpairedids:
-                    self.btpairedids.append(pair_result[i]['mac_address'])
-                    self.lstbox.insert(j+1, "%s" % (pair_result[i]['name']))
-                    j = j + 1
+            self.btdeviceids.append(pair_result[i]['mac_address'])
+            self.lstbox.insert(i+1, "%s" % (pair_result[i]['name']))
 
         self.lblstatus.config(text="Finished")
 
@@ -189,21 +193,17 @@ class BtTk():
                 idselect = self.lstbox.curselection()[0]
                 if self.btdeviceids[idselect]:
                     self.lblstatus.config(text="Address: " + self.btdeviceids[idselect])
-                    
+
                     btdevid = self.btdeviceids[idselect]
                     self.btctl.pair(btdevid)
-
-                    out = subprocess.check_output("pulseaudio -k",shell=True)
-                    out = subprocess.check_output("pulseaudio --start",shell=True)
                     self.btctl.connect(btdevid)
-
                     self.btctl.trust(btdevid)
         else:
             self.lblstatus.config(text="List First")
 
     def playstart(self):
         self.playstop()
-        self.play = sp.Popen(["play", "-q", "-v", "0.05", "~/vrains-ed.mp3"],stdout=None,stderr=None)
+        self.play = sp.Popen(["play", "-q", "-v", "0.05", "~/arcv-kirifuda.mp3"],stdout=None,stderr=None)
 
     def playstop(self):
         if not (self.play is None):
