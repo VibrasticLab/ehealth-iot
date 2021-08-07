@@ -103,6 +103,11 @@ class BtTk():
         self.btnconn.pack()
         self.btnconn.config(bg='black',fg='white')
 
+        ## Button Pulseaudio Restart
+        self.btnplse = tk.Button(self.btnfrm,text="PulseRST",command=self.pulserst)
+        self.btnplse.pack()
+        self.btnplse.config(bg='black',fg='white')
+
         ## Button App Quit
         self.btnquit = tk.Button(self.btnfrm,text="  Quit  ",command=self.appquit)
         self.btnquit.pack()
@@ -125,6 +130,7 @@ class BtTk():
         self.btnbtlist.config(font=btnfont)
         self.btnpair.config(font=btnfont)
         self.btnconn.config(font=btnfont)
+        self.btnplse.config(font=btnfont)
         self.btnquit.config(font=btnfont)
 
         ## Main Loop
@@ -145,7 +151,6 @@ class BtTk():
         """Bluetooth List Routine
         """
 
-        self.lblstatus.config(text="Searching")
         self.lstbox.delete(0,tk.END)
         self.btdeviceids.clear()
 
@@ -156,13 +161,12 @@ class BtTk():
             self.btdeviceids.append(scan_result[i]['mac_address'])
             self.lstbox.insert(i+1,"%s" % (scan_result[i]['name']))
 
-        self.lblstatus.config(text="Finished")
+        self.lblstatus.config(text="Available List")
 
     def btpaired(self):
         """Bluetooth List Routine
         """
 
-        self.lblstatus.config(text="Paired")
         self.lstbox.delete(0,tk.END)
         self.btdeviceids.clear()
 
@@ -172,27 +176,32 @@ class BtTk():
             self.btdeviceids.append(pair_result[i]['mac_address'])
             self.lstbox.insert(i+1, "%s" % (pair_result[i]['name']))
 
-        self.lblstatus.config(text="Finished")
+        self.lblstatus.config(text="Paired List")
 
     def btconnect(self):
         """Connect Bluetooth
         """
+
         if len(self.btdeviceids) > 0:
             if self.lstbox.curselection():
                 idselect = self.lstbox.curselection()[0]
                 if self.btdeviceids[idselect]:
-                    self.lblstatus.config(text="Address: " + self.btdeviceids[idselect])
+                    self.lblstatus.config(text="Connected: " + self.btdeviceids[idselect])
 
-                    sp.Popen(["pulseaudio","-k"],stdout=None, stderr=None, bufsize=-1)
-                    if not self.isrunning("pulseaudio"):
-                        sp.Popen(["pulseaudio","--start"],stdout=None, stderr=None, bufsize=-1)
+                    sp.check_output("pulseaudio --start",shell=True)
 
                     btdevid = self.btdeviceids[idselect]
                     self.btctl.pair(btdevid)
                     self.btctl.connect(btdevid)
                     self.btctl.trust(btdevid)
+
         else:
             self.lblstatus.config(text="List First")
+
+    def pulserst(self):
+        sp.check_output("pulseaudio -k",shell=True)
+        sp.check_output("pulseaudio --start",shell=True)
+        self.lblstatus.config(text="Pulseaudio restarted")
 
     def playstart(self):
         self.playstop()
