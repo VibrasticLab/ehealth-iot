@@ -6,10 +6,7 @@ CoughAnalyzer GUI using tkinter
 """
 
 # Imports system libraries
-import sys
-import psutil
 import tkinter as tk
-import subprocess as sp
 from tkinter import font
 
 # Import matplotlib libraries
@@ -17,18 +14,25 @@ from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationTool
 # Implement the default Matplotlib key bindings.
 from matplotlib.backend_bases import key_press_handler
 from matplotlib.figure import Figure
-import numpy as np
+from matplotlib import style
 
-class BtTk():
+import numpy as np
+import random as rnd
+
+from time import sleep
+from threading import Timer as tmr
+from threading import Thread as thd 
+
+class CoughTk():
     """CoughAnalyzer Program with GUI
     """
 
-    btdeviceids = []
-    play = None
+    loopdata = False
+    loopgraph = False
     DarkTheme = False
 
     def __init__(self):
-        super(BtTk, self).__init__()
+        super(CoughTk, self).__init__()
 
         # Main Window
         self.window = tk.Tk()
@@ -43,7 +47,7 @@ class BtTk():
         self.btnfrm = tk.Frame(self.window)
 
         # Button Start to Analyze
-        self.btnstart = tk.Button(self.btnfrm, text="  Start ")
+        self.btnstart = tk.Button(self.btnfrm, text=" Start/Stop", command=self.randomtest)
         self.btnstart.pack(side=tk.LEFT)
 
         # Button Graph Test
@@ -60,11 +64,18 @@ class BtTk():
         # Graph Frame
         self.graphfrm = tk.Frame() 
 
+        # Graph Data
+        self.F = 5
+        self.t = np.arange(0, 3, .01)
+        self.y = np.sin(self.F * np.pi * self.t)
+
         # Example Figure Plot
         self.fig = Figure(figsize=(5, 4), dpi=100)
-        t = np.arange(0, 3, .01)
-        self.fig.add_subplot(111).plot(t, 2 * np.sin(20 * np.pi * t))
+        self.ax = self.fig.add_subplot(111)
+        self.ax.set_ylim(-1,1)
+        self.line, = self.ax.plot(self.t, self.y)
 
+        style.use('ggplot')
         self.canvas = FigureCanvasTkAgg(self.fig, master=self.graphfrm)
         self.canvas.draw()
         self.canvas.get_tk_widget().pack(side=tk.LEFT)
@@ -91,19 +102,12 @@ class BtTk():
             self.btnquit.config(bg='black', fg='white')
             self.btnfrm.config(bg='black')
 
+        # start graph loop
+        self.loopgraph = True
+        thd(target=self.graphloop).start()
+
         # Main Loop
         self.window.mainloop()
-
-    def isrunning(self, process):
-        """ Check if a process name running"""
-
-        for proc in psutil.process_iter():
-            try:
-                if process.lower() in proc.name().lower():
-                    return True
-            except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
-                pass
-        return False
 
     def on_key_press(self,event):
         """ Test Graph Key Event"""
@@ -113,8 +117,39 @@ class BtTk():
     def appquit(self):
         """ Quit Program"""
 
+        self.loopdata = False
+        self.loopgraph = False
         self.window.destroy()
 
+    def randomtest(self):
+        if self.loopdata:
+            self.loopdata = False
+        else:
+            self.loopdata = True
+            self.randomfreq()
+
+    def randomfreq(self):
+        """ Update Data with random frequency"""
+
+        self.F = rnd.randint(5,20)
+        self.y = np.sin(self.F* np.pi * self.t)
+        print("update")
+        
+        if self.loopdata:
+            tmr(1.0,self.randomfreq).start()
+            
+    def graphloop(self):
+        """ Refresh Plot using new data"""
+        
+        while self.loopgraph:
+            self.graphdraw()
+            sleep(0.1)
+
+    def graphdraw(self):
+        """ Refresh Plot using new data"""
+        
+        self.line.set_data(self.t,self.y)
+        self.canvas.draw_idle()
 
 if __name__ == "__main__":
-    bttk = BtTk()
+    cough = CoughTk()

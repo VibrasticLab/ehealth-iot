@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+"""@package btwrapper
+Bluetoothctl Wrapper
+"""
+
 import time
 import pexpect
 import subprocess
