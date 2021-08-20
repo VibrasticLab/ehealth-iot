@@ -21,7 +21,7 @@ import random as rnd
 
 from time import sleep
 from threading import Timer as tmr
-from threading import Thread as thd 
+from threading import Thread as thd
 
 class CoughTk():
     """CoughAnalyzer Program with GUI
@@ -62,7 +62,7 @@ class CoughTk():
         self.btnfrm.pack(side=tk.TOP)
 
         # Graph Frame
-        self.graphfrm = tk.Frame() 
+        self.graphfrm = tk.Frame()
 
         # Graph Data
         self.F = 5
@@ -134,20 +134,20 @@ class CoughTk():
         self.F = rnd.randint(5,20)
         self.y = np.sin(self.F* np.pi * self.t)
         print("update")
-        
+
         if self.loopdata:
-            tmr(1.0,self.randomfreq).start()
-            
+            tmr(0.1,self.randomfreq).start()
+
     def graphloop(self):
         """ Refresh Plot using new data"""
-        
+
         while self.loopgraph:
             self.graphdraw()
-            sleep(0.1)
+            sleep(0.005)
 
     def graphdraw(self):
         """ Refresh Plot using new data"""
-        
+
         self.line.set_data(self.t,self.y)
         self.canvas.draw_idle()
 
