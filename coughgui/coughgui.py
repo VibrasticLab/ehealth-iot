@@ -87,7 +87,7 @@ class CoughTk():
         self.graphfrm.pack(side=tk.BOTTOM,expand=True)
 
         # Button Font
-        btnfont = font.Font(self.btnfrm, family="Liberation Mono", size=10)
+        btnfont = font.Font(self.btnfrm, family="Liberation Mono", size=15)
         self.lbltitle.config(font=btnfont)
         self.btnstart.config(font=btnfont)
         self.btntest.config(font=btnfont)

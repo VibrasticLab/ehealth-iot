@@ -48,7 +48,7 @@ class TkAlsaRec():
 
         device = 'dmic_sv'
         self.file = open('out.raw', 'wb')
-        self.rawinput = alsa.PCM(alsa.PCM_CAPTURE, alsa.PCM_NORMAL, channels=2, rate=44100,format=alsa.PCM_FORMAT_S32_LE, periodsize=512, device=device)
+        self.rawinput = alsa.PCM(alsa.PCM_CAPTURE, alsa.PCM_NORMAL, channels=2, rate=44100,format=alsa.PCM_FORMAT_S16_LE, periodsize=512, device=device)
         thd(target=self.recprocess).start()
 
         self.window.mainloop()
@@ -57,6 +57,7 @@ class TkAlsaRec():
         if self.Record:
             self.Record = False
             if self.file:
+                self.file.flush()
                 self.file.close()
             self.btnstart.config(text='Start')
         else:
@@ -75,9 +76,9 @@ class TkAlsaRec():
     def recprocess(self):
         while self.RecLoop:
             if self.Record:
-                status, indata = self.rawinput.read()
+                long, indata = self.rawinput.read()
 
-                if status:
+                if long:
                     if self.file:
                         self.file.write(indata)
                     tm.sleep(0.001)
