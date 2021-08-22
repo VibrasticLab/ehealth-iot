@@ -18,12 +18,10 @@ from matplotlib import style
 
 import numpy as np
 import random as rnd
-
 from time import sleep
-from threading import Timer as tmr
-from threading import Thread as thd
 
 import alsaaudio as alsa
+from threading import Thread as thd
 
 class CoughTk():
     """CoughAnalyzer Program with GUI
@@ -79,8 +77,6 @@ class CoughTk():
         self.canvas.draw()
         self.canvas.get_tk_widget().pack(side=tk.LEFT)
 
-        #self.canvas.mpl_connect("key_press_event", self.on_key_press)
-
         # Pack Graph Frame
         # Must packed the last
         self.graphfrm.pack(side=tk.BOTTOM,expand=True)
@@ -112,12 +108,9 @@ class CoughTk():
         # Main Loop
         self.window.mainloop()
 
-    def on_key_press(self,event):
-        """ Test Graph Key Event"""
-
-        key_press_handler(event, self.canvas)
-
     def recstart(self):
+        """ Record Process Start"""
+
         if self.Record:
             self.Record = False
             self.btnstart.config(text='Start')
@@ -126,12 +119,16 @@ class CoughTk():
             self.btnstart.config(text='Stop')
 
     def appquit(self):
+        """ Program Quit"""
+
         self.Record = False
         self.RecLoop = False
         self.loopgraph = False
         self.window.destroy()
 
     def recprocess(self):
+        """ Record Process Loop"""
+
         while self.RecLoop:
             if self.Record:
                 long, indata = self.rawinput.read()
