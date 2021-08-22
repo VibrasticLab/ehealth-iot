@@ -26,5 +26,5 @@ if __name__ == "__main__":
 
         if long:
             file.write(data)
-            tm.sleep(.001)
+            tm.sleep(0.01)
 

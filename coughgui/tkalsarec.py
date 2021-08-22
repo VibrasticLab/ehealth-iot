@@ -81,7 +81,7 @@ class TkAlsaRec():
                 if long:
                     if self.file:
                         self.file.write(indata)
-                    tm.sleep(0.001)
+                    tm.sleep(0.01)
 
 if __name__ == "__main__":
     tkalsarec = TkAlsaRec()

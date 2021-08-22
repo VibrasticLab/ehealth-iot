@@ -11,15 +11,14 @@ from tkinter import font
 
 # Import matplotlib libraries
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
-# Implement the default Matplotlib key bindings.
-from matplotlib.backend_bases import key_press_handler
+import matplotlib.animation as animation
 from matplotlib.figure import Figure
 from matplotlib import style
 
+# Import others libraries
 import numpy as np
 import random as rnd
 from time import sleep
-
 import alsaaudio as alsa
 from threading import Thread as thd
 
@@ -27,7 +26,6 @@ class CoughTk():
     """CoughAnalyzer Program with GUI
     """
 
-    loopgraph = False
     Record = False
     RecLoop = True
     DarkTheme = False
@@ -95,13 +93,12 @@ class CoughTk():
             self.btnquit.config(bg='black', fg='white')
             self.btnfrm.config(bg='black')
 
-        # start graph loop
-        self.loopgraph = True
-        thd(target=self.graphloop).start()
+        # start graph animation
+        self.ani = animation.FuncAnimation(self.fig, self.graphupdate, interval=0.005, repeat=False)
+        self.ani._start()
 
         # start mic routine
         device = 'dmic_sv'
-        self.file = open('out.raw', 'wb')
         self.rawinput = alsa.PCM(alsa.PCM_CAPTURE, alsa.PCM_NORMAL, channels=2, rate=44100,format=alsa.PCM_FORMAT_S16_LE, periodsize=self.AudioLong, device=device)
         thd(target=self.recprocess).start()
 
@@ -123,7 +120,6 @@ class CoughTk():
 
         self.Record = False
         self.RecLoop = False
-        self.loopgraph = False
         self.window.destroy()
 
     def recprocess(self):
@@ -137,13 +133,10 @@ class CoughTk():
                     self.Y = np.frombuffer(indata, dtype='i2' ) / 32768
                     sleep(0.01)
 
-    def graphloop(self):
+    def graphupdate(self,args):
         """ Refresh Plot using new data"""
 
-        while self.loopgraph:
-            self.line.set_data(self.X,self.Y)
-            self.canvas.draw_idle()
-            sleep(0.005)
+        self.line.set_data(self.X,self.Y)
 
 if __name__ == "__main__":
     cough = CoughTk()
