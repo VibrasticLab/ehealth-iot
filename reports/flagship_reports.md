@@ -106,3 +106,10 @@ You can found the script prototype [here](https://github.com/VibrasticLab/ehealt
 
 ---
 
+Next plan to build a PCB Shield to replace jumper cables and make more compact design.
+
+![images](images/shield_pcb.png?raw=true)
+
+![images](images/shield_3d.png?raw=true)
+
+Component need to buy is a Long Male-Female header from [Tokped](https://www.tokopedia.com/mulsanne/stack-stackable-header-1x40-male-female-untuk-arduino-shield)
