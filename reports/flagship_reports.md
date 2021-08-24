@@ -115,6 +115,6 @@ Next plan to build a PCB Shield to replace jumper cables and make more compact d
 
 ![images](images/shield_3d.png?raw=true)
 
-PCB order planned from [Tokped](https://www.tokopedia.com/geraicerdas/cetak-pcb-1-keping-single-double-layer-rapid-prototyping-satuan)
+PCB order planned from [Tokped](https://www.tokopedia.com/geraicerdas/custom-order-cetak-professional-pcb-2-layer-hasl-merah)
 
 Component need to buy is a Long Male-Female header from [Tokped](https://www.tokopedia.com/mulsanne/stack-stackable-header-1x40-male-female-untuk-arduino-shield)
