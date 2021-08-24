@@ -19,7 +19,10 @@ Already built first basic prototype
 ---
 
 For I2S Mic Driver, here some step to setup:
-- install I2S Mic kernel module from [here](- https://github.com/mekatronik-achmadi/archmate/tree/master/embedded/raspberrypi/drivers/i2smems/). **Notes:** It works with ALSA but not Pulseaudio
+- install I2S Mic kernel module from [here](https://github.com/mekatronik-achmadi/archmate/tree/master/embedded/raspberrypi/drivers/i2smems/).
+
+**Notes:** It works with ALSA but not Pulseaudio. Bugfixes needed
+
 - Reboot
 - write this ALSA config on *~/.asoundrc* file:
 
@@ -62,7 +65,7 @@ sudo alsactl store
 
 Python ALSA Wrapper
 
-To access I2S Mic from ALSA using Python, you can install it wrapper first.
+To access I2S Mic from ALSA using Python, you can install it's wrapper first.
 
 For Arch-Linux ARM or its derivatives, you can install this [AUR Package](https://aur.archlinux.org/packages/python-pyalsaaudio/)
 
