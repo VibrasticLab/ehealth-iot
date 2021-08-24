@@ -16,6 +16,8 @@ Already built first basic prototype
 
 ![images](images/proto0.png?raw=true)
 
+---
+
 For I2S Mic Driver, here some step to setup:
 - install I2S Mic kernel module from [here](- https://github.com/mekatronik-achmadi/archmate/tree/master/embedded/raspberrypi/drivers/i2smems/). **Notes:** It works with ALSA but not Pulseaudio
 - Reboot
@@ -55,3 +57,52 @@ sudo alsactl store
 ```
 
 - Now I2S Mic ready to use via ALSA and it's wrapper
+
+---
+
+Python ALSA Wrapper
+
+To access I2S Mic from ALSA using Python, you can install it wrapper first.
+
+For Arch-Linux ARM or its derivatives, you can install this [AUR Package](https://aur.archlinux.org/packages/python-pyalsaaudio/)
+
+Then you can test using this Python3 script:
+
+```python
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+import time as tm
+import alsaaudio as alsa
+
+if __name__ == "__main__":
+
+    device = 'dmic_sv'
+
+    file = open('out.raw', 'wb')
+
+    rawinput = alsa.PCM(alsa.PCM_CAPTURE,alsa.PCM_NORMAL,channels=2,rate=44100,
+    			format=alsa.PCM_FORMAT_S16_LE,periodsize=512, device=device)
+
+    loops = 1000000
+    while loops > 0:
+        loops -= 1
+        long, data = rawinput.read()
+
+        if long:
+            file.write(data)
+            tm.sleep(0.01)
+```
+
+Press **CTRL+C** to stop, then you can replay record using command:
+
+```sh
+aplay -r 44100 -f S16_LE -c 2 out.raw
+```
+
+The Interface shown above made by combining Matplotlib Graph, Tkinter GUI, Python ALSA wrapper, and Python Numpy.
+
+You can found the script prototype [here](https://github.com/VibrasticLab/ehealth-iot/blob/master/coughgui/coughgui.py)
+
+---
+
