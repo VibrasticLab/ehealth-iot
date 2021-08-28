@@ -9,16 +9,9 @@
 #ifndef _GUI_H_
 #define _GUI_H_
 
+#include <math.h>
 #include <gtk/gtk.h>
-
-/**
- * @brief Binded some gui elements
- */ 
-
-typedef struct{
-    GtkWidget     *w_txt_vw_memory;
-    GtkTextBuffer *textbuffer_main;
-} app_widgets;
+#include <slope/slope.h>
 
 /**
  * @brief GTK GUI construction
@@ -27,14 +20,10 @@ typedef struct{
 void guiConstruct(void);
 
 /**
- * @brief Button memory get
+ * @brief GTK GUI deconstruction
+ * @details Call all GTK GUI build here
  */
-void on_btn_get_mem_size_clicked(GtkButton *button, app_widgets *app_wdgts);
-
-/**
- * @brief Window destroy callback
- */
-void on_window_main_destroy();
+void guiDeconstruct(void);
 
 #endif
 

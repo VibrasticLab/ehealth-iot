@@ -1,3 +1,6 @@
+# beside need Gtk3 and Cairo, it also need Slope Library
+# For ArchLinux/Manjaro: https://github.com/mekatronik-achmadi/archmate/tree/master/packages/pkgbuild/gtk-slope/
+
 TARGET=cough
 
 INCDIR=-I./
@@ -10,7 +13,8 @@ GTKLIB=`pkg-config --cflags --libs gtk+-3.0`
 CCFLAGS=$(OPT) $(WARN) $(PTHREAD) $(GTKLIB) -pipe
 
 LD=$(CC)
-LDFLAGS=$(OPT) $(WARN) $(PTHREAD) $(GTKLIB) -export-dynamic
+LIBFLAGS=-lm -lslope
+LDFLAGS=$(OPT) $(WARN) $(PTHREAD) $(GTKLIB) $(LIBFLAGS) -export-dynamic
 
 SOURCES=$(wildcard *.c )
 OBJECTS=$(SOURCES:.c=.o)
