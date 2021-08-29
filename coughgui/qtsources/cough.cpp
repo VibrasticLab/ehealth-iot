@@ -37,7 +37,7 @@ Cough::~Cough()
 void Cough::dataUpdate(){
     uint8_t rndfreq;
 
-    rndfreq = QRandomGenerator::global()->bounded(0,10);
+    rndfreq = QRandomGenerator::global()->bounded(1,10);
     for(uint8_t idx=0;idx<plotDataSize;++idx){
         yData[idx] = sin(rndfreq*M_PI*idx/50);
     }
