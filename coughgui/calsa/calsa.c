@@ -3,7 +3,8 @@
  *
  * Configuration: stereo, 16LE, 44100 Hz
  *
- * From on Paul David's tutorial : http://equalarea.com/paul/alsa-audio.html
+ * From on Paul David's tutorial: http://equalarea.com/paul/alsa-audio.html
+ * Other example (C++): https://github.com/flatmax/gtkiostream/blob/master/applications/ALSACapture.C
  *
  * sudo pacman -S alsa-lib
  * gcc -o calsa -lasound calsa.c && ./calsa hw:0
@@ -23,6 +24,7 @@
 #include <alsa/asoundlib.h>
 
 #define SHORT_TEST 0
+#define PCM_NORMAL 0
 
 /**
  * @brief Main function
@@ -31,10 +33,6 @@ int main (int argc, char *argv[]){
     /* general variables */
     int err;
     unsigned int i;
-
-#if SHORT_TEST
-    unsigned int sz;
-#endif
 
     /* buffer parameters */
     char *buffer;
@@ -51,7 +49,7 @@ int main (int argc, char *argv[]){
     FILE *rawfile;
 
     /* try open input device */
-    if ((err=snd_pcm_open(&captureHandle,argv[1],SND_PCM_STREAM_CAPTURE,0))<0) {
+    if ((err=snd_pcm_open(&captureHandle,argv[1],SND_PCM_STREAM_CAPTURE,PCM_NORMAL))<0) {
         fprintf(stderr,"failed open %s device (%s)\n",argv[1],snd_strerror(err));
         return 1;
     }
@@ -119,7 +117,7 @@ int main (int argc, char *argv[]){
     fprintf(stdout,"buffer allocated\n");
 
     /* open raw file */
-    if((rawfile=fopen(argv[2],"ab"))==NULL){
+    if((rawfile=fopen(argv[2],"wb"))==NULL){
         fprintf(stdout,"failed open raw file target\n");
         return 1;
     }
@@ -132,13 +130,13 @@ int main (int argc, char *argv[]){
             fprintf (stderr,"read from audio interface failed (%s)\n",snd_strerror(err));
             return 1;
         }
-        sz = sizeof(buffer);
         fprintf(stdout,"test read %d done in %d\n",i,sz);
     }
 #else
     for(i=0;i<2000;++i){
         snd_pcm_readi(captureHandle,buffer,bufferFrame);
         fwrite(buffer,1,channels*bufferFrame,rawfile);
+        fflush(rawfile);
     }
 #endif
     free(buffer);
