@@ -3,6 +3,7 @@
  *
  * Configuration: stereo, 16LE, 44100 Hz
  *
+ * Original Gist: https://gist.github.com/albanpeignier/104902
  * From on Paul David's tutorial: http://equalarea.com/paul/alsa-audio.html
  * Other example (C++): https://github.com/flatmax/gtkiostream/blob/master/applications/ALSACapture.C
  *
@@ -141,7 +142,7 @@ int main (int argc, char *argv[]){
 #endif
     free(buffer);
 
-    snd_pcm_close(captureHandle);   
+    snd_pcm_close(captureHandle);
     fprintf(stdout,"audio interface closed\n");
 
     return 0;

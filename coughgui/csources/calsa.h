@@ -56,14 +56,18 @@
 /**
  * @brief ALSA Initialization
  * @details Initialize ALSA infrastructure
+ * @param[in] char Device Name String
+ * @return int Execution status
  */
 int calsaInit(char *devName);
 
 /**
  * @brief ALSA Capture
  * @details ALSA Capture function
+ * @param[in] short Capture Buffer 
+ * @return int Execution status
  */
-int calsaInput(short *buffer);
+int calsaInput(short *capBuffer);
 
 /**
  * @brief Close Function

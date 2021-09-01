@@ -19,7 +19,7 @@ const long n = BUFFERFRAME;
 GtkWidget* chart;
 
 /* Audio buffer */
-short audioBuffer[BUFFERFRAME];
+extern short *audioBuffer;
 
 gboolean timer_cb(GtkWidget* chart){
     int err;
@@ -39,6 +39,7 @@ gboolean timer_cb(GtkWidget* chart){
 }
 
 void guiConstruct(void){
+
     chart = slope_chart_new();
     g_signal_connect(G_OBJECT(chart), "destroy", G_CALLBACK(gtk_main_quit), NULL);
 
@@ -48,7 +49,7 @@ void guiConstruct(void){
     long k;
     for (k = 0; k < n; ++k){
       x[k] = k;
-      y[k] = (double) 2*sin(2*M_PI*x[k]/BUFFERFRAME);
+      y[k] = (double) sin(2*M_PI*x[k]/BUFFERFRAME);
     }
 
     scale = slope_xyscale_new();
@@ -57,7 +58,7 @@ void guiConstruct(void){
     series = slope_xyseries_new_filled("wave", x, y, n, "b-");
     slope_scale_add_item(scale, series);
 
-    g_timeout_add(10, (GSourceFunc) timer_cb, (gpointer) chart);
+    g_timeout_add(50, (GSourceFunc) timer_cb, (gpointer) chart);
 
     gtk_widget_set_size_request(chart, 480, 320);
     gtk_window_set_resizable(GTK_WINDOW(chart), FALSE);

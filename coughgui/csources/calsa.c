@@ -15,6 +15,9 @@ snd_pcm_t *captureHandle;
 snd_pcm_hw_params_t *hwParams;
 unsigned int sampleRate = SAMPLERATE;
 
+/* Audio buffer */
+short *audioBuffer;
+
 int calsaInit(char *devName){
     int err;
 
@@ -63,12 +66,14 @@ int calsaInit(char *devName){
         return ALSAERR;
     }
 
+    audioBuffer = malloc(CHANNELSIZE * snd_pcm_format_width(PCMFORMAT)/8 * BUFFERFRAME);
+
     return ALSAOK;
  }
 
-int calsaInput(short *buffer){
+int calsaInput(short *capBuff){
     int err;
-    err=snd_pcm_readi(captureHandle, buffer, BUFFERFRAME);
+    err=snd_pcm_readi(captureHandle, capBuff, BUFFERFRAME);
     
     /* overrun (broken pipe) error */
     if(err==-EPIPE){
@@ -91,6 +96,7 @@ int calsaInput(short *buffer){
  }
 
 void calsaClose(void){
+    free(audioBuffer);
     snd_pcm_hw_params_free(hwParams);
     snd_pcm_close(captureHandle);
 }

@@ -26,8 +26,8 @@ int main(int argc, char *argv[]){
     guiConstruct();
 
     gtk_main();
-    guiDeconstruct();
     calsaClose();
+    guiDeconstruct();
 
     return 0;
 }
