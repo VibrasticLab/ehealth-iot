@@ -9,12 +9,13 @@ CC=gcc
 WARN=-Wall
 
 PTHREAD=-pthread
+ALSALIB=`pkg-config --cflags --libs alsa`
 GTKLIB=`pkg-config --cflags --libs gtk+-3.0`
-CCFLAGS=$(OPT) $(WARN) $(PTHREAD) $(GTKLIB) -pipe
+CCFLAGS=$(OPT) $(WARN) $(PTHREAD) $(GTKLIB) $(ALSALIB) -pipe
 
 LD=$(CC)
 LIBFLAGS=-lm -lslope
-LDFLAGS=$(OPT) $(WARN) $(PTHREAD) $(GTKLIB) $(LIBFLAGS) -export-dynamic
+LDFLAGS=$(OPT) $(WARN) $(PTHREAD) $(GTKLIB) $(ALSALIB) $(LIBFLAGS) -export-dynamic
 
 SOURCES=$(wildcard *.c )
 OBJECTS=$(SOURCES:.c=.o)

@@ -7,23 +7,29 @@
  */
 
 #include "gui.h"
+#include "calsa.h"
+#include <stdio.h>
 
 SlopeScale* scale;
 SlopeItem* series;
 
 double* x;
 double* y;
-long count = 0;
-const long n = 200;
-const double dx = 4.0 * G_PI / n;
+const long n = BUFFERFRAME;
 GtkWidget* chart;
 
-gboolean timer_cb(GtkWidget* chart){
-    count++;
+/* Audio buffer */
+short audioBuffer[BUFFERFRAME];
 
-    long k;
+gboolean timer_cb(GtkWidget* chart){
+    int err;
+    unsigned int k;
+
+    err=calsaInput(audioBuffer);
+    if(err!=ALSAOK)return TRUE;
+
     for(k=0;k<n;++k){
-        y[k] = sin(x[k] + 0.1*count);
+        y[k] = (double) audioBuffer[k]/32768;
     }
 
     slope_xyseries_set_data(SLOPE_XYSERIES(series), x, y, n);
@@ -41,8 +47,8 @@ void guiConstruct(void){
 
     long k;
     for (k = 0; k < n; ++k){
-      x[k] = k * dx;
-      y[k] = 2.5 * sin(x[k]);
+      x[k] = k;
+      y[k] = (double) 2*sin(2*M_PI*x[k]/BUFFERFRAME);
     }
 
     scale = slope_xyscale_new();
