@@ -1,5 +1,8 @@
 # beside need Gtk3 and Cairo, it also need Slope Library
 # For ArchLinux/Manjaro: https://github.com/mekatronik-achmadi/archmate/tree/master/packages/pkgbuild/gtk-slope/
+# 
+# For 'dmic_sv' setup to I2SMic volume: https://github.com/mekatronik-achmadi/archmate/blob/master/embedded/raspberrypi/install_armv7h.md#boost-i2s-mic-alsa
+# To run: startx ./cough dmic_sv
 
 TARGET=cough
 

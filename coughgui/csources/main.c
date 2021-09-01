@@ -17,18 +17,18 @@ int main(int argc, char *argv[]){
     int err;
 
     gtk_init(&argc, &argv);
-    
+
     err = calsaInit(argv[1]);
     if(err!=ALSAOK){
         fprintf(stderr,"ALSA failed\n");
-        return 1;
+        return ALSAERR;
     }
     guiConstruct();
 
     gtk_main();
     guiDeconstruct();
     calsaClose();
-    
+
     return 0;
 }
 

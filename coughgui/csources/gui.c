@@ -29,7 +29,7 @@ gboolean timer_cb(GtkWidget* chart){
     if(err!=ALSAOK)return TRUE;
 
     for(k=0;k<n;++k){
-        y[k] = (double) audioBuffer[k]/32768;
+        y[k] = (double) audioBuffer[k]/PCMSCALE;
     }
 
     slope_xyseries_set_data(SLOPE_XYSERIES(series), x, y, n);
