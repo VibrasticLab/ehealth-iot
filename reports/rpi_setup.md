@@ -429,15 +429,13 @@ From SSH you can do all things same as your local shell (vim, cp, mkdir, etc)
 if [ -n "$SSH_CLIENT" ] || [ -n "$SSH_TTY" ]; then
     echo "SSH Login"
 else
-	# do what you want when login occur
-	# like run a GUI program
-    #startx gtkprogram &> /dev/null
+    echo "Normal Login"
 fi
 ```
 
 
-**Tips** You can use SSHFS to mount a directory in RaspberryPi into you local directory
-Install [sshfs](https://archlinux.org/packages/community/x86_64/sshfs/) then you can run
+**Tips:** You can use SSHFS to mount a directory in RaspberryPi into you local directory
+Install [sshfs](https://archlinux.org/packages/community/x86_64/sshfs/) then you can mount using command
 
 ```sh
 mkdir -p sshmnt/
@@ -550,7 +548,63 @@ dtparam=i2s=on" | sudo tee -a /boot/config.txt
 sudo reboot
 ```
 
+After reboot, you can check if I2S Mic register status using command:
 
+```sh
+arecord -l
+```
 
+it should be registered as *plughw:1*
+
+Now, to boost volume, run this command to create file *~/.asoundrc*
+
+```sh
+echo "
+pcm.dmic_hw {
+	type hw
+	card sndrpii2scard
+	channels 2
+	format S16_LE
+}
+pcm.dmic_sv {
+	type softvol
+	slave.pcm dmic_hw
+	control {
+		name I2SMic
+		card sndrpii2scard
+	}
+	min_dB -3.0
+	max_dB 30.0
+}
+" | tee $HOME/.asoundrc
+```
+
+Then run this command for short period time (CTRL+Z to stop):
+
+```sh
+arecord -D dmic_sv -c2 -r 44100 -f S16_LE -t wav -V mono -v record.wav
+```
+
+After that, adjust the volume into 100% and store it as ALSA state
+
+```sh
+sudo rm -f /var/lib/alsa/asound.state
+amixer -D sysdefault:CARD=sndrpii2scard set I2SMic 100%
+sudo alsactl store
+```
+
+Now, to test a record (CTRL+Z to stop):
+
+```sh
+arecord -D dmic_sv -c2 -r 44100 -f S16_LE -t wav -V mono -v record.wav
+```
+
+for playback:
+
+```sh
+arecord -D dmic_sv -c2 -r 44100 -f S16_LE -t wav -V mono -v record.wav
+```
+
+**Tips:** If need Python wrapper for ALSA, you can install this [AUR Package](https://aur.archlinux.org/packages/python-pyalsaaudio/)
 
 
