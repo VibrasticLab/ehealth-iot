@@ -19,8 +19,10 @@
 	+ [Download Required Packages](https://github.com/VibrasticLab/ehealth-iot/blob/master/reports/rpi_setup.md#download-required-packages)
 	+ [Install Required Packages](https://github.com/VibrasticLab/ehealth-iot/blob/master/reports/rpi_setup.md#install-required-packages)
 - [Global Configurations](https://github.com/VibrasticLab/ehealth-iot/blob/master/reports/rpi_setup.md#global-configurations)
+- [Complete Install]()
 - [Spesific Configurations](https://github.com/VibrasticLab/ehealth-iot/blob/master/reports/rpi_setup.md#spesific-configurations)
 	+ [LCD Waveshare35](https://github.com/VibrasticLab/ehealth-iot/blob/master/reports/rpi_setup.md#lcd-waveshare35)
+	+ [I2S Microphone]()
 
 ## Pre-Requisites
 
@@ -302,7 +304,7 @@ systemctl disable systemd-networkd
 systemctl enable NetworkManager
 ```
 
-### Enable SSH Server (Optional)
+### Enable SSH Server
 
  ```sh
 mkdir -p /etc/ssh
@@ -336,14 +338,119 @@ ExecStart=-/sbin/agetty --autologin alarm --noclear %I 38400 linux
 
 ---
 
+## Complete Install
+
+Run this command to cleanup MMC and exiting after installation complete
+
+```sh
+rm -vf /home/alarm/{install_pkgs.txt,pkglist.txt,upgrade_pkgs.txt}
+rm -vf /var/cache/pacman/pkg/*
+
+exit
+```
+
+then unmount MMC
+
+```sh
+sudo umount /mnt/root/boot/
+sudo umount /mnt/root/
+```
+
+Now you can boot MMC into actual RaspberryPi 4 or 3 unit
+
 ## Spesific Configurations
+
+### Wifi Connect
+
+For this section, you need to connect RaspberryPi display into regular HDMI or VGA display.
+
+Also you need keyboard connected into one RaspberryPi USB 2.0
+
+First enable RaspberryPi WiFi Radio:
+
+```sh
+sudo nmcli radio wifi on
+```
+
+Scan nearby WiFi:
+
+```sh
+sudo nmcli dev wifi
+```
+
+
+Now to connecting an WiFi, with known SSID and password:
+
+```sh
+sudo nmcli dev wifi connect CobaMQTT password "cobamqtt"
+```
+
+**Alternatively**, if you fancy NCurses interface, you can use:
+
+```sh
+sudo nmtui
+```
+
+Finally, after connected, check connected ip using:
+
+```sh
+ifconfig
+```
+
+### SSH Login
+
+After RaspberryPi connected to a WiFi, you can now login into Raspberry via SSH without using connected Keyboard or Display
+
+First you may want to remove known SSH server in your laptop:
+
+```sh
+rm -r ~/.ssh/
+```
+
+To login using RaspberryPi IP, use command:
+
+```sh
+ssh alarm@10.124.X.YYY
+```
+
+or if you need X11 forwarding:
+
+```sh
+ssh -Y alarm@10.124.X.YYY
+```
+
+From SSH you can do all things same as your local shell (vim, cp, mkdir, etc)
+
+**Tips:** You can put this logic in RaspberryPi *~/.bashrc* to differentiate between normal login and SSH login
+
+```
+if [ -n "$SSH_CLIENT" ] || [ -n "$SSH_TTY" ]; then
+    echo "SSH Login"
+else
+	# do what you want when login occur
+	# like run a GUI program
+    #startx gtkprogram &> /dev/null
+fi
+```
+
+
+**Tips** You can use SSHFS to mount a directory in RaspberryPi into you local directory
+Install [sshfs](https://archlinux.org/packages/community/x86_64/sshfs/) then you can run
+
+```sh
+mkdir -p sshmnt/
+sshfs alarm@192.168.X.YYY:/home/alarm sshmnt/
+```
+
+---
+
+**CAUTION**: After this section, all next instructions are done in SSH/SSHFS into actual running RaspberryPi or using connected keyboard-display.
+**NOT** chrooted in local shell.
 
 ### LCD Waveshare35
 
 Download the overlay file waveshare35a.dts from [here](https://raw.githubusercontent.com/swkim01/waveshare-dtoverlays/master/waveshare35a.dts),
-then copy it into home folder in chrooted shell
-
-Make sure your working directory is home folder in chrooted shell and run:
+then copy it into home folder in actual RaspberryPi
 
 ```sh
 dtc -@ -Hepapr -I dts -O dtb -o waveshare35a.dtbo waveshare35a.dts
@@ -356,7 +463,7 @@ gpasswd -a alarm tty
 sed -i '$s/$/ fbcon=font:ProFont6x11/' /boot/cmdline.txt
 ```
 
-Next add these configuration into config.txt
+Next run this command to add these configuration into config.txt
 
 For Waveshare35 (A):
 
@@ -403,7 +510,7 @@ EndSection' >  /etc/X11/xorg.conf.d/noblank.conf
 sed -i "s#/dev/fb0#/dev/fb1#g" /etc/X11/xorg.conf.d/99-fbturbo.conf
 ```
 
-Now you can run gui programs using command like:
+**Reboot** then you can run gui programs using command like:
 
 ```sh
 startx gtkprogram
@@ -414,3 +521,19 @@ or gui scripting:
 ```sh
 startx /usr/bin/python3 gtkpython
 ```
+
+### I2S Microphone
+
+These instructions specificly using INMP441 I2S Microphone.
+
+First install I2S Microphone kernel module from [here](https://github.com/mekatronik-achmadi/archmate/tree/master/embedded/raspberrypi/drivers/i2smems/)
+
+Next run this command to add these configuration into config.txt
+
+```sh
+echo "dtparam=audio=on" >> /boot/config.txt
+echo "dtparam=i2s=on" >> /boot/config.txt
+```
+
+then **Reboot**
+
