@@ -7,9 +7,8 @@
  */
 
 #include "calsa.h"
-#include <asm-generic/errno-base.h>
 #include <stdlib.h>
- 
+
  /* ALSA parameters */
 snd_pcm_t *captureHandle;
 snd_pcm_hw_params_t *hwParams;
@@ -74,13 +73,13 @@ int calsaInit(char *devName){
 int calsaInput(short *capBuff){
     int err;
     err=snd_pcm_readi(captureHandle, capBuff, BUFFERFRAME);
-    
+
     /* overrun (broken pipe) error */
     if(err==-EPIPE){
         snd_pcm_prepare(captureHandle);
         return ALSAERR;
     }
-    
+
     if(err!=-EPIPE){
         if(err==-EAGAIN){
             err = 0;
