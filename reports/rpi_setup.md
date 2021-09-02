@@ -13,6 +13,8 @@
 	+ [New Packages URLs](https://github.com/VibrasticLab/ehealth-iot/blob/master/reports/rpi_setup.md#generate-new-packages-urls)
 	+ [Download New Packages](https://github.com/VibrasticLab/ehealth-iot/blob/master/reports/rpi_setup.md#download-new-packages)
 	+ [Install New Packages](https://github.com/VibrasticLab/ehealth-iot/blob/master/reports/rpi_setup.md#install-new-packages)
+- [Required Package]
+	+ [Required Packages URLs]()
 
 ## Pre-Requisites
 
@@ -176,3 +178,9 @@ sed -i "s#= Optional#= Never#g" /etc/pacman.conf
 
 pacman -Su --noconfirm
 ```
+
+## Required Packages
+
+#### Required Packages URLs
+
+First download package list [here]()

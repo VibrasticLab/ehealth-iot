@@ -1,0 +1,53 @@
+base base-devel terminus-font
+linux-raspberrypi4-headers
+bash-completion htop tmux
+nano-syntax-highlighting
+
+networkmanager modemmanager
+mobile-broadband-provider-info iftop
+bind-tools netctl ppp wpa_supplicant
+tcpdump fping gnu-netcat inetutils
+net-tools bridge-utils iwd ethtool
+crda wireless_tools usb_modeswitch
+traceroute wavemon bmon nethogs
+mtr iw dhcp dhclient dnsmasq
+
+ranger lynx
+moc atool most
+dtc rsync wget
+python lua perl
+fdupes w3m imlib2
+poppler highlight
+mediainfo libcaca
+sysstat lm_sensors
+
+vim vim-ctrlp vim-nerdtree
+vim-ultisnips vim-nerdcommenter
+vim-tagbar vim-airline vim-surround
+
+xorg xorg-apps xorg-drivers
+xorg-xinit xorg-fonts xterm
+xf86-video-fbturbo-git
+xinput_calibrator
+
+ttf-dejavu
+ttf-liberation
+ttf-inconsolata
+
+cython python-setuptools
+python-pkgconfig python-wheel
+python-pip python-distutils-extra
+
+python-numpy python-matplotlib
+python-scipy python-sounddevice
+
+tk gtk2 gtk3 python-gobject
+
+openblas cblas lapack
+git hub tig subversion
+mercurial bzr cvs cloc
+npm yarn nodejs setconf
+pkgconf gendesk help2man
+autoconf automake cscope
+cmake extra-cmake-modules
+autogen meson ninja openssh
