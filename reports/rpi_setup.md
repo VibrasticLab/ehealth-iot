@@ -24,7 +24,7 @@
 	+ [WiFi Connect](https://github.com/VibrasticLab/ehealth-iot/blob/master/reports/rpi_setup.md#wifi-connect)
 	+ [SSH Login](https://github.com/VibrasticLab/ehealth-iot/blob/master/reports/rpi_setup.md#ssh-login)
 	+ [LCD Waveshare35](https://github.com/VibrasticLab/ehealth-iot/blob/master/reports/rpi_setup.md#lcd-waveshare35)
-	+ [I2S Microphone]()
+	+ [I2S Microphone](https://github.com/VibrasticLab/ehealth-iot/blob/master/reports/rpi_setup.md#i2s-microphone)
 
 ## Pre-Requisites
 
