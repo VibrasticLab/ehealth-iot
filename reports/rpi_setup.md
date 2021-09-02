@@ -18,7 +18,9 @@
 	+ [Required Packages URLs](https://github.com/VibrasticLab/ehealth-iot/blob/master/reports/rpi_setup.md#required-packages-urls)
 	+ [Download Required Packages](https://github.com/VibrasticLab/ehealth-iot/blob/master/reports/rpi_setup.md#download-required-packages)
 	+ [Install Required Packages](https://github.com/VibrasticLab/ehealth-iot/blob/master/reports/rpi_setup.md#install-required-packages)
-- [Global Configurations]()
+- [Global Configurations](https://github.com/VibrasticLab/ehealth-iot/blob/master/reports/rpi_setup.md#global-configurations)
+- [Spesific Configurations]()
+	+ [LCD Waveshare35]()
 
 ## Pre-Requisites
 
@@ -109,7 +111,7 @@ sudo arch-chroot /mnt/root /bin/bash
 
 ## Upgrades Installed Package 
 
-#### Initialize Pacman Key
+### Initialize Pacman Key
 
 ```sh
 pacman-key --init
@@ -118,7 +120,7 @@ pacman-key --populate archlinuxarm
 
 ---
 
-#### Download Database
+### Download Database
 
 **Notes:** These instructions done in new shell outside the chrooted shell but in same working directory
 
@@ -148,7 +150,7 @@ sudo rsync -avh databases/ /mnt/root/var/lib/pacman/sync/
 
 ---
 
-#### Generate New Packages URLs
+### Generate New Packages URLs
 
 ```sh
 pacman -Sup > /home/alarm/upgrade_pkgs.txt
@@ -156,7 +158,7 @@ pacman -Sup > /home/alarm/upgrade_pkgs.txt
 
 ---
 
-#### Download New Packages
+### Download New Packages
 
 **Notes:** These instructions done in new shell outside the chrooted shell but in same working directory
 
@@ -175,7 +177,7 @@ sudo rsync -avh packages/official/ /mnt/root/var/cache/pacman/pkg/
 
 ---
 
-#### Install New Packages
+### Install New Packages
 
 ```sh
 sed -i "s#= Required DatabaseOptional#= Never#g" /etc/pacman.conf
@@ -189,7 +191,7 @@ pacman -Su --noconfirm
 
 ## Required Packages
 
-#### Package List
+### Package List
 
 First download package list [here](https://github.com/VibrasticLab/ehealth-iot/blob/master/reports/pkg_basic.txt)
 
@@ -203,7 +205,7 @@ cp -vf ../pkg_*.txt /mnt/root/home/alarm/pkglist.txt
 
 ---
 
-#### Required Packages URLs
+### Required Packages URLs
 
 Now you can generate required packages urls
 
@@ -213,7 +215,7 @@ pacman -Sp $(cat /home/alarm/pkglist.txt) > /home/alarm/install_pkgs.txt
 
 ---
 
-#### Download Required Packages
+### Download Required Packages
 
 **Notes:** These instructions done in new shell outside the chrooted shell but in same working directory
 
@@ -232,7 +234,7 @@ sudo rsync -avh packages/official/ /mnt/root/var/cache/pacman/pkg/
 
 ---
 
-#### Install Required Packages
+### Install Required Packages
 
 ```sh
 sed -i "s#= Required DatabaseOptional#= Never#g" /etc/pacman.conf
@@ -246,20 +248,27 @@ pacman -S --noconfirm $(cat /home/alarm/pkglist.txt)
 
 ## Global Configurations
 
-#### Set Hostname (Optional)
+### Workaround no HDMI bug
+
+```sh
+echo "hdmi_force_hotplug=1" >> /boot/config.txt
+```
+
+
+### Set Hostname (Optional)
 
 ```sh
 echo "alarmrpi" > /etc/hostname
 ```
 
-#### Silent Kernel/Systemd message (Optional)
+### Silent Kernel/Systemd message (Optional)
 
 ```sh
 sed -i '$s/$/ audit=0 quiet loglevel=0/' /boot/cmdline.txt
 echo 'kernel.printk = 3 3 3 3' > /etc/sysctl.d/20-quiet-printk.conf
 ```
 
-#### Generate new English locale
+### Generate new English locale
 
 ```sh
 echo "LANG=en_US.UTF-8" > /etc/locale.conf
@@ -268,7 +277,7 @@ echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen
 locale-gen
 ```
 
-#### Disable sudo passwords
+### Disable sudo passwords
 
 ```sh
 echo "%wheel ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
@@ -276,7 +285,7 @@ passwd -d root
 passwd -d alarm
 ```
 
-#### Set Console Font
+### Set Console Font
 
 ```sh
 echo "FONT=ter-112n
@@ -284,7 +293,7 @@ FONT_MAP=8859-2
 " > /etc/vconsole.conf
 ```
 
-#### Enable Network Manager
+### Enable Network Manager
 
 ```sh
 systemctl disable dhcpd4
@@ -293,7 +302,7 @@ systemctl disable systemd-networkd
 systemctl enable NetworkManager
 ```
 
-#### Enable SSH Server (Optional)
+### Enable SSH Server (Optional)
 
  ```sh
 mkdir -p /etc/ssh
@@ -314,7 +323,7 @@ AllowTcpForwarding yes
 systemctl enable sshd.service
 ```
 
-#### Shell Autologin
+### Shell Autologin
 
 ```sh
 mkdir -p /etc/systemd/system/getty@tty1.service.d/
@@ -326,3 +335,48 @@ ExecStart=-/sbin/agetty --autologin alarm --noclear %I 38400 linux
 ```
 
 ---
+
+## Spesific Configurations
+
+### LCD Waveshare35
+
+Download the overlay file waveshare35a.dts from [here](https://raw.githubusercontent.com/swkim01/waveshare-dtoverlays/master/waveshare35a.dts),
+then copy it into home folder in chrooted shell
+
+Make sure your working directory is home folder in chrooted shell and run:
+
+```sh
+dtc -@ -Hepapr -I dts -O dtb -o waveshare35a.dtbo waveshare35a.dts
+cp -f /home/alarm/waveshare35a.dtbo /boot/overlays/
+
+groupadd -fr video
+gpasswd -a alarm video
+gpasswd -a alarm tty
+
+sed -i '$s/$/ fbcon=font:ProFont6x11/' /boot/cmdline.txt
+```
+
+Next add these configuration into config.txt
+
+For Waveshare35 (A):
+
+```sh
+echo "
+dtparam=spi=on
+dtoverlay=waveshare35a:rotate=270,swapxy=1" >> /boot/config.txt
+```
+
+For Waveshare35 (C) that using High SPI:
+
+```sh
+echo "
+dtparam=spi=on
+dtoverlay=waveshare35a:rotate=270,swapxy=1,speed=80000000" >> /boot/config.txt
+```
+
+**Optionally**, if you also use HDMI along with, run these command:
+
+```sh
+sed -i "s#/dev/fb0#/dev/fb1#g" /etc/X11/xorg.conf.d/99-fbturbo.conf
+```
+
