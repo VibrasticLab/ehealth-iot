@@ -132,6 +132,14 @@ Tested High Speed SPI LCD from [Tokped](https://www.tokopedia.com/digiware/lcd-3
 Still use *waveshare35a* overlay (since it init code compatibility),
 but maximum SPI clock now up to 80MHz instead 20MHz like previous.
 
+Shield PCB arrives, bridging Waveshare 35 LCD and I2S Mic in single board
+
+![images](images/sep2021_a.jpg?raw=true)
+
+Back View
+
+![images](images/sep2021_b.jpg?raw=true)
+
 ---
 
 The code now available in two form, C and Python.
@@ -160,16 +168,6 @@ There are still some problem for C implementation:
 ![images](images/sep2021_1.jpg?raw=true)
 
 ---
-
-### Waiting components
-
-Next is get rid of those signal cables by replacing it with a PCB Shield ordered [here](https://www.tokopedia.com/geraicerdas/cetak-pcb-1-keping-single-double-layer-rapid-prototyping-satuan)
-
-Now shipping:
-
-![images](images/sep2021_2.jpg?raw=true)
- 
- ---
  
 ### Planned Next:
  - Implement audio or cough analyzer in either C or Python Implementation
