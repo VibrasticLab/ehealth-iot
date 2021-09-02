@@ -19,8 +19,8 @@
 	+ [Download Required Packages](https://github.com/VibrasticLab/ehealth-iot/blob/master/reports/rpi_setup.md#download-required-packages)
 	+ [Install Required Packages](https://github.com/VibrasticLab/ehealth-iot/blob/master/reports/rpi_setup.md#install-required-packages)
 - [Global Configurations](https://github.com/VibrasticLab/ehealth-iot/blob/master/reports/rpi_setup.md#global-configurations)
-- [Spesific Configurations]()
-	+ [LCD Waveshare35]()
+- [Spesific Configurations](https://github.com/VibrasticLab/ehealth-iot/blob/master/reports/rpi_setup.md#spesific-configurations)
+	+ [LCD Waveshare35](https://github.com/VibrasticLab/ehealth-iot/blob/master/reports/rpi_setup.md#lcd-waveshare35)
 
 ## Pre-Requisites
 
@@ -374,9 +374,43 @@ dtparam=spi=on
 dtoverlay=waveshare35a:rotate=270,swapxy=1,speed=80000000" >> /boot/config.txt
 ```
 
-**Optionally**, if you also use HDMI along with, run these command:
+And for touchscreen calibration, run this:
+
+```sh
+echo 'Section "InputClass"
+    Identifier          "libinput touchscreen"
+    MatchIsTouchScreen  "on"
+    MatchDevicePath     "/dev/input/event*"
+    Driver              "libinput"
+    Option "TransformationMatrix" "1 0 0 0 -1 1 0 0 1"
+EndSection' > /etc/X11/xorg.conf.d/99-calibration.conf
+```
+
+Lastly, to prevent Xorg blank sleeping, run this command:
+
+```sh
+echo 'Section "ServerFlags"
+    Option "StandbyTime" "0"
+    Option "SuspendTime" "0"
+    Option "OffTime" "0"
+    Option "BlankTime" "0"
+EndSection' >  /etc/X11/xorg.conf.d/noblank.conf
+```
+
+**Optionally**, if you also use HDMI along with, run this command:
 
 ```sh
 sed -i "s#/dev/fb0#/dev/fb1#g" /etc/X11/xorg.conf.d/99-fbturbo.conf
 ```
 
+Now you can run gui programs using command like:
+
+```sh
+startx gtkprogram
+```
+
+or gui scripting:
+
+```sh
+startx /usr/bin/python3 gtkpython
+```
