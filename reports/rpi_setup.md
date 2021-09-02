@@ -1,18 +1,18 @@
 # RaspberryPi Setup Summary
 
 ## Contents
-- [Pre-Requisites]()
-- [MMC Prepare]()
-- [Image Download]()
-	+ [RaspberryPi-4]()
-	+ [RaspberryPi-3]()
-- [Chroot Into MMC]()
-- [Upgrade Packages]()
-	+ [Initialize Pacman-Key]()
-	+ [Download Databases]()
-	+ [New Packages URLs]()
-	+ [Download New Packages]()
-	+ [Install New Packages]()
+- [Pre-Requisites](https://github.com/VibrasticLab/ehealth-iot/blob/master/reports/rpi_setup.md#pre-requisites)
+- [MMC Prepare](https://github.com/VibrasticLab/ehealth-iot/blob/master/reports/rpi_setup.md#mmc-prepare)
+- [Image Download](https://github.com/VibrasticLab/ehealth-iot/blob/master/reports/rpi_setup.md#download-archlinuxarm-images)
+	+ [RaspberryPi-4](https://github.com/VibrasticLab/ehealth-iot/blob/master/reports/rpi_setup.md#raspberrypi-4)
+	+ [RaspberryPi-3](https://github.com/VibrasticLab/ehealth-iot/blob/master/reports/rpi_setup.md#raspberrypi-3)
+- [Chroot Into MMC](https://github.com/VibrasticLab/ehealth-iot/blob/master/reports/rpi_setup.md#chroot-into-mmc)
+- [Upgrade Packages](https://github.com/VibrasticLab/ehealth-iot/blob/master/reports/rpi_setup.md#upgrades-installed-package)
+	+ [Initialize Pacman-Key](https://github.com/VibrasticLab/ehealth-iot/blob/master/reports/rpi_setup.md#initialize-pacman-key)
+	+ [Download Databases](https://github.com/VibrasticLab/ehealth-iot/blob/master/reports/rpi_setup.md#download-database)
+	+ [New Packages URLs](https://github.com/VibrasticLab/ehealth-iot/blob/master/reports/rpi_setup.md#generate-new-packages-urls)
+	+ [Download New Packages](https://github.com/VibrasticLab/ehealth-iot/blob/master/reports/rpi_setup.md#download-new-packages)
+	+ [Install New Packages](https://github.com/VibrasticLab/ehealth-iot/blob/master/reports/rpi_setup.md#install-new-packages)
 
 ## Pre-Requisites
 
@@ -85,7 +85,7 @@ sudo umount /mnt/root /mnt/boot
 
 Chrooting is process to mount other filesystem and change root shell into it.
 
-First install Qemu ARM Static from [AUR Package](https://aur.archlinux.org/packages/qemu-user-static-bin/)
+First install Qemu ARM Static from this [AUR Package](https://aur.archlinux.org/packages/qemu-user-static-bin/)
 
 Copy the binary into mounted MMC
 
@@ -146,7 +146,11 @@ sudo rsync -avh databases/ /mnt/root/var/lib/pacman/sync/
 pacman -Sup > /home/alarm/upgrade_pkgs.txt
 ```
 
+---
+
 #### Download New Packages
+
+**Notes:** These instructions done in new shell outside the chrooted shell but in same working directory
 
 ```sh
 cp -vf /mnt/root/home/alarm/upgrade_pkgs.txt ./
@@ -160,6 +164,8 @@ copy downloaded new package files
 ```sh
 sudo rsync -avh packages/official/ /mnt/root/var/cache/pacman/pkg/
 ```
+
+---
 
 #### Install New Packages
 
