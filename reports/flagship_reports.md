@@ -3,6 +3,7 @@
 ## Contents
 - [Older Reports](https://github.com/VibrasticLab/ehealth-iot/blob/master/reports/flagship_reports.md#older-reports)
 - [Augusts 2021](https://github.com/VibrasticLab/ehealth-iot/blob/master/reports/flagship_reports.md#august-2021)
+- [September 2021]()
 
 ## Older Reports
 
@@ -105,7 +106,7 @@ aplay -r 44100 -f S16_LE -c 2 out.raw
 
 The Interface shown above made by combining Matplotlib Graph, Tkinter GUI, Python ALSA wrapper, and Python Numpy.
 
-You can found the script prototype [here](https://github.com/VibrasticLab/ehealth-iot/blob/master/coughgui/coughgui.py)
+You can found the script prototype [here](https://github.com/VibrasticLab/ehealth-iot/blob/master/coughgui/pysources/coughgui.py)
 
 ---
 
@@ -118,3 +119,64 @@ Next plan to build a PCB Shield to replace jumper cables and make more compact d
 PCB order planned from [Tokped](https://www.tokopedia.com/geraicerdas/cetak-pcb-1-keping-single-double-layer-rapid-prototyping-satuan)
 
 Component need to buy is a Long Male-Female header from [Tokped](https://www.tokopedia.com/mulsanne/stack-stackable-header-1x40-male-female-untuk-arduino-shield)
+
+---
+
+## September 2021
+
+### What's done:
+
+Tested High Speed SPI LCD from [Tokped](https://www.tokopedia.com/digiware/lcd-3-5-inch-resistive-touch-screen-480x320-high-spi-raspberry-pi).
+
+Still use *waveshare35a* overlay (since it init code compatibility),
+but maximum SPI clock now up to 80MHz instead 20MHz like previous.
+
+---
+
+The code now available in two form, C and Python.
+Despite different implementation languages, both using ALSA API wrapped in their own ways
+
+### Python:
+
+Python script [here](https://github.com/VibrasticLab/ehealth-iot/blob/master/coughgui/pysources/coughgui.py)
+
+Using PyALSA (ALSA Python wrapper) [here](http://larsimmisch.github.io/pyalsaaudio/), Tkinter, Numpy, and Matplotlib libraries 
+
+![images](images/sep2021_0.jpg?raw=true)
+
+### C:
+
+C source-tree [here](https://github.com/VibrasticLab/ehealth-iot/tree/master/coughgui/csources/cgtk)
+
+Using ALSA API directly, GTK3, Cairo, and [Slope](https://github.com/bytebrew/slope) plotting libraries
+
+There are still some problem for C implementation:
+- Correct chunk array variable memory allocation
+- Overrun and other capture error handling
+- Latency between audio and graph
+- write RAW/WAVE output test
+
+![images](images/sep2021_1.jpg?raw=true)
+
+---
+
+### Waiting components
+
+Next is get rid of those signal cables by replacing it with a PCB Shield ordered [here](https://www.tokopedia.com/geraicerdas/cetak-pcb-1-keping-single-double-layer-rapid-prototyping-satuan)
+
+Now shipping:
+
+![images](images/sep2021_2.jpg?raw=true)
+ 
+ ---
+ 
+### Planned Next:
+ - Implement audio or cough analyzer in either C or Python Implementation
+ - Build packaging after PCB Shield arrived and successfully tested
+ 
+---
+
+### Next Job:
+- I2SMic input to ESP32
+
+
