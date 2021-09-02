@@ -34,6 +34,11 @@ ttf-dejavu
 ttf-liberation
 ttf-inconsolata
 
+sox twolame
+pulseaudio-alsa
+alsa-lib alsa-plugins
+alsa-utils alsa-firmware
+
 cython python-setuptools
 python-pkgconfig python-wheel
 python-pip python-distutils-extra

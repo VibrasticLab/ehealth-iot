@@ -19,8 +19,10 @@
 	+ [Download Required Packages](https://github.com/VibrasticLab/ehealth-iot/blob/master/reports/rpi_setup.md#download-required-packages)
 	+ [Install Required Packages](https://github.com/VibrasticLab/ehealth-iot/blob/master/reports/rpi_setup.md#install-required-packages)
 - [Global Configurations](https://github.com/VibrasticLab/ehealth-iot/blob/master/reports/rpi_setup.md#global-configurations)
-- [Complete Install]()
+- [Complete Install](https://github.com/VibrasticLab/ehealth-iot/blob/master/reports/rpi_setup.md#complete-install)
 - [Spesific Configurations](https://github.com/VibrasticLab/ehealth-iot/blob/master/reports/rpi_setup.md#spesific-configurations)
+	+ [WiFi Connect](https://github.com/VibrasticLab/ehealth-iot/blob/master/reports/rpi_setup.md#wifi-connect)
+	+ [SSH Login](https://github.com/VibrasticLab/ehealth-iot/blob/master/reports/rpi_setup.md#ssh-login)
 	+ [LCD Waveshare35](https://github.com/VibrasticLab/ehealth-iot/blob/master/reports/rpi_setup.md#lcd-waveshare35)
 	+ [I2S Microphone]()
 
@@ -454,13 +456,13 @@ then copy it into home folder in actual RaspberryPi
 
 ```sh
 dtc -@ -Hepapr -I dts -O dtb -o waveshare35a.dtbo waveshare35a.dts
-cp -f /home/alarm/waveshare35a.dtbo /boot/overlays/
+sudo cp -f /home/alarm/waveshare35a.dtbo /boot/overlays/
 
-groupadd -fr video
-gpasswd -a alarm video
-gpasswd -a alarm tty
+sudo groupadd -fr video
+sudo gpasswd -a alarm video
+sudo gpasswd -a alarm tty
 
-sed -i '$s/$/ fbcon=font:ProFont6x11/' /boot/cmdline.txt
+sudo sed -i '$s/$/ fbcon=font:ProFont6x11/' /boot/cmdline.txt
 ```
 
 Next run this command to add these configuration into config.txt
@@ -470,7 +472,7 @@ For Waveshare35 (A):
 ```sh
 echo "
 dtparam=spi=on
-dtoverlay=waveshare35a:rotate=270,swapxy=1" >> /boot/config.txt
+dtoverlay=waveshare35a:rotate=270,swapxy=1" | sudo tee -a /boot/config.txt
 ```
 
 For Waveshare35 (C) that using High SPI:
@@ -478,7 +480,7 @@ For Waveshare35 (C) that using High SPI:
 ```sh
 echo "
 dtparam=spi=on
-dtoverlay=waveshare35a:rotate=270,swapxy=1,speed=80000000" >> /boot/config.txt
+dtoverlay=waveshare35a:rotate=270,swapxy=1,speed=80000000" | sudo tee -a /boot/config.txt
 ```
 
 And for touchscreen calibration, run this:
@@ -490,7 +492,7 @@ echo 'Section "InputClass"
     MatchDevicePath     "/dev/input/event*"
     Driver              "libinput"
     Option "TransformationMatrix" "1 0 0 0 -1 1 0 0 1"
-EndSection' > /etc/X11/xorg.conf.d/99-calibration.conf
+EndSection'  | sudo tee /etc/X11/xorg.conf.d/99-calibration.conf
 ```
 
 Lastly, to prevent Xorg blank sleeping, run this command:
@@ -501,16 +503,22 @@ echo 'Section "ServerFlags"
     Option "SuspendTime" "0"
     Option "OffTime" "0"
     Option "BlankTime" "0"
-EndSection' >  /etc/X11/xorg.conf.d/noblank.conf
+EndSection'  | sudo tee /etc/X11/xorg.conf.d/noblank.conf
 ```
 
 **Optionally**, if you also use HDMI along with, run this command:
 
 ```sh
-sed -i "s#/dev/fb0#/dev/fb1#g" /etc/X11/xorg.conf.d/99-fbturbo.conf
+sudo sed -i "s#/dev/fb0#/dev/fb1#g" /etc/X11/xorg.conf.d/99-fbturbo.conf
 ```
 
-**Reboot** then you can run gui programs using command like:
+**Reboot** using command
+
+```sh
+sudo reboot
+```
+
+then you can run gui programs using command like:
 
 ```sh
 startx gtkprogram
@@ -531,9 +539,18 @@ First install I2S Microphone kernel module from [here](https://github.com/mekatr
 Next run this command to add these configuration into config.txt
 
 ```sh
-echo "dtparam=audio=on" >> /boot/config.txt
-echo "dtparam=i2s=on" >> /boot/config.txt
+echo "
+dtparam=audio=on
+dtparam=i2s=on" | sudo tee -a /boot/config.txt
 ```
 
-then **Reboot**
+**Reboot** using command
+
+```sh
+sudo reboot
+```
+
+
+
+
 
