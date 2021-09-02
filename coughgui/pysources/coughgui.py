@@ -28,7 +28,7 @@ class CoughTk():
 
     Record = False
     RecLoop = True
-    DarkTheme = False
+    DarkTheme = True
     AudioLong = 512
 
     def __init__(self):
@@ -101,6 +101,9 @@ class CoughTk():
         device = 'dmic_sv'
         self.rawinput = alsa.PCM(alsa.PCM_CAPTURE, alsa.PCM_NORMAL, channels=2, rate=44100,format=alsa.PCM_FORMAT_S16_LE, periodsize=self.AudioLong, device=device)
         thd(target=self.recprocess).start()
+
+        # start record loop
+        self.recstart()
 
         # Main Loop
         self.window.mainloop()
