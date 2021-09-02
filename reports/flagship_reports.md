@@ -4,7 +4,7 @@
 - [Older Reports](https://github.com/VibrasticLab/ehealth-iot/blob/master/reports/flagship_reports.md#older-reports)
 - [Augusts 2021](https://github.com/VibrasticLab/ehealth-iot/blob/master/reports/flagship_reports.md#august-2021)
 - [September 2021](https://github.com/VibrasticLab/ehealth-iot/blob/master/reports/flagship_reports.md#september-2021)
-- [RPi Setup Summary]()
+- [RPi Setup Summary](https://github.com/VibrasticLab/ehealth-iot/blob/master/reports/flagship_reports.md#rpi-setup-summary)
 
 ## Older Reports
 
@@ -187,3 +187,8 @@ Now shipping:
 This section contain summary Raspberry Pi version 3 or 4 setup guides and notes
 
 The operating system used is Arch Linux ARM in armv7h architecture
+
+Detailed setup instructions can be found [here]()
+
+**Notes**: Instructions available here are done in ArchLinux.
+You may use Manjaro or even Ubuntu/LinuxMint but now Windows.
