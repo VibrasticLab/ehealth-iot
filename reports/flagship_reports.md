@@ -188,7 +188,7 @@ This section contain summary Raspberry Pi version 3 or 4 setup guides and notes
 
 The operating system used is Arch Linux ARM in armv7h architecture
 
-Detailed setup instructions can be found [here]()
+Detailed setup instructions can be found [here](https://github.com/VibrasticLab/ehealth-iot/blob/master/reports/rpi_setup.md)
 
 **Notes**: Instructions available here are done in ArchLinux.
 You may use Manjaro or even Ubuntu/LinuxMint but now Windows.
