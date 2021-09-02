@@ -14,8 +14,11 @@
 	+ [Download New Packages](https://github.com/VibrasticLab/ehealth-iot/blob/master/reports/rpi_setup.md#download-new-packages)
 	+ [Install New Packages](https://github.com/VibrasticLab/ehealth-iot/blob/master/reports/rpi_setup.md#install-new-packages)
 - [Required Package](https://github.com/VibrasticLab/ehealth-iot/blob/master/reports/rpi_setup.md#required-packages)
-	+ [Package List]()
+	+ [Package List](https://github.com/VibrasticLab/ehealth-iot/blob/master/reports/rpi_setup.md#package-list)
 	+ [Required Packages URLs](https://github.com/VibrasticLab/ehealth-iot/blob/master/reports/rpi_setup.md#required-packages-urls)
+	+ [Download Required Packages](https://github.com/VibrasticLab/ehealth-iot/blob/master/reports/rpi_setup.md#download-required-packages)
+	+ [Install Required Packages](https://github.com/VibrasticLab/ehealth-iot/blob/master/reports/rpi_setup.md#install-required-packages)
+- [Global Configurations]()
 
 ## Pre-Requisites
 
@@ -102,6 +105,8 @@ Then Chroot into it
 sudo arch-chroot /mnt/root /bin/bash
 ```
 
+---
+
 ## Upgrades Installed Package 
 
 #### Initialize Pacman Key
@@ -180,6 +185,8 @@ sed -i "s#= Optional#= Never#g" /etc/pacman.conf
 pacman -Su --noconfirm
 ```
 
+---
+
 ## Required Packages
 
 #### Package List
@@ -234,3 +241,88 @@ sed -i "s#= Optional#= Never#g" /etc/pacman.conf
 
 pacman -S --noconfirm $(cat /home/alarm/pkglist.txt)
 ```
+
+---
+
+## Global Configurations
+
+#### Set Hostname (Optional)
+
+```sh
+echo "alarmrpi" > /etc/hostname
+```
+
+#### Silent Kernel/Systemd message (Optional)
+
+```sh
+sed -i '$s/$/ audit=0 quiet loglevel=0/' /boot/cmdline.txt
+echo 'kernel.printk = 3 3 3 3' > /etc/sysctl.d/20-quiet-printk.conf
+```
+
+#### Generate new English locale
+
+```sh
+echo "LANG=en_US.UTF-8" > /etc/locale.conf
+echo "en_US ISO-8859-1" >> /etc/locale.gen
+echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen
+locale-gen
+```
+
+#### Disable sudo passwords
+
+```sh
+echo "%wheel ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+passwd -d root
+passwd -d alarm
+```
+
+#### Set Console Font
+
+```sh
+echo "FONT=ter-112n
+FONT_MAP=8859-2
+" > /etc/vconsole.conf
+```
+
+#### Enable Network Manager
+
+```sh
+systemctl disable dhcpd4
+systemctl disable wpa_supplicant
+systemctl disable systemd-networkd
+systemctl enable NetworkManager
+```
+
+#### Enable SSH Server (Optional)
+
+ ```sh
+mkdir -p /etc/ssh
+echo "
+PermitRootLogin yes
+AuthorizedKeysFile .ssh/authorized_keys
+PermitEmptyPasswords yes
+ChallengeResponseAuthentication no
+UsePAM yes
+PrintMotd no
+Subsystem sftp /usr/lib/ssh/sftp-server
+X11Forwarding yes
+X11UseLocalhost yes
+X11DisplayOffset 10
+AllowTcpForwarding yes
+" > /etc/ssh/sshd_config
+
+systemctl enable sshd.service
+```
+
+#### Shell Autologin
+
+```sh
+mkdir -p /etc/systemd/system/getty@tty1.service.d/
+
+echo "[Service]
+ExecStart=
+ExecStart=-/sbin/agetty --autologin alarm --noclear %I 38400 linux
+" > /etc/systemd/system/getty@tty1.service.d/autologin.conf
+```
+
+---
