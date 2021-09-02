@@ -3,7 +3,8 @@
 ## Contents
 - [Older Reports](https://github.com/VibrasticLab/ehealth-iot/blob/master/reports/flagship_reports.md#older-reports)
 - [Augusts 2021](https://github.com/VibrasticLab/ehealth-iot/blob/master/reports/flagship_reports.md#august-2021)
-- [September 2021]()
+- [September 2021](https://github.com/VibrasticLab/ehealth-iot/blob/master/reports/flagship_reports.md#september-2021)
+- [RPi Setup Summary]()
 
 ## Older Reports
 
@@ -179,4 +180,10 @@ Now shipping:
 ### Next Job:
 - I2SMic input to ESP32
 
+---
 
+## RPi Setup Summary
+
+This section contain summary Raspberry Pi version 3 or 4 setup guides and notes
+
+The operating system used is Arch Linux ARM in armv7h architecture
