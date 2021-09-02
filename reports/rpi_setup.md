@@ -13,8 +13,9 @@
 	+ [New Packages URLs](https://github.com/VibrasticLab/ehealth-iot/blob/master/reports/rpi_setup.md#generate-new-packages-urls)
 	+ [Download New Packages](https://github.com/VibrasticLab/ehealth-iot/blob/master/reports/rpi_setup.md#download-new-packages)
 	+ [Install New Packages](https://github.com/VibrasticLab/ehealth-iot/blob/master/reports/rpi_setup.md#install-new-packages)
-- [Required Package]
-	+ [Required Packages URLs]()
+- [Required Package](https://github.com/VibrasticLab/ehealth-iot/blob/master/reports/rpi_setup.md#required-packages)
+	+ [Package List]()
+	+ [Required Packages URLs](https://github.com/VibrasticLab/ehealth-iot/blob/master/reports/rpi_setup.md#required-packages-urls)
 
 ## Pre-Requisites
 
@@ -181,6 +182,55 @@ pacman -Su --noconfirm
 
 ## Required Packages
 
+#### Package List
+
+First download package list [here](https://github.com/VibrasticLab/ehealth-iot/blob/master/reports/pkg_basic.txt)
+
+Then copy it to MMC using this command:
+
+**Notes:** These instructions done in new shell outside the chrooted shell but in same working directory
+
+```sh
+cp -vf ../pkg_*.txt /mnt/root/home/alarm/pkglist.txt
+```
+
+---
+
 #### Required Packages URLs
 
-First download package list [here]()
+Now you can generate required packages urls
+
+```sh
+pacman -Sp $(cat /home/alarm/pkglist.txt) > /home/alarm/install_pkgs.txt
+```
+
+---
+
+#### Download Required Packages
+
+**Notes:** These instructions done in new shell outside the chrooted shell but in same working directory
+
+```sh
+cp -vf /mnt/root/home/alarm/install_pkgs.txt ./
+mkdir -p packages/official/;cd packages/official/
+wget -i ../../install_pkgs.txt
+cd ../../
+```
+
+copy downloaded required package files 
+
+```sh
+sudo rsync -avh packages/official/ /mnt/root/var/cache/pacman/pkg/
+```
+
+---
+
+#### Install Required Packages
+
+```sh
+sed -i "s#= Required DatabaseOptional#= Never#g" /etc/pacman.conf
+sed -i "s#= Optional TrustAll#= Never#g" /etc/pacman.conf
+sed -i "s#= Optional#= Never#g" /etc/pacman.conf
+
+pacman -S --noconfirm $(cat /home/alarm/pkglist.txt)
+```
