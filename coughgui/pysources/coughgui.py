@@ -65,8 +65,9 @@ class CoughTk():
         self.Y = np.zeros(2*self.AudioLong, dtype='i2')
 
         # Example Figure Plot
-        self.fig = Figure(figsize=(5, 4), dpi=100)
+        self.fig = Figure(figsize=(5, 4), dpi=100,facecolor='black')
         self.ax = self.fig.add_subplot(111)
+        self.ax.set_facecolor('black')
         self.ax.set_ylim(-1,1)
         self.line, = self.ax.plot(self.X, self.Y)
 
