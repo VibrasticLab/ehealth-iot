@@ -20,7 +20,7 @@ void app_main(void){
     gpio_reset_pin(BLINK_GPIO);
     gpio_set_direction(BLINK_GPIO, GPIO_MODE_OUTPUT);
 
-    xTaskCreate(&hello_task, "helloworld", 512, NULL, 5, NULL);
+    xTaskCreate(&hello_task, "helloworld", 1024, NULL, 5, NULL);
 
     while(1){
         gpio_set_level(BLINK_GPIO, 0);
