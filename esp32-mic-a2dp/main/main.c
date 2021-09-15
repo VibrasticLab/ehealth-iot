@@ -10,11 +10,14 @@
 #include "esp_console.h"
 #include "esp_log.h"
 #include "esp_vfs_dev.h"
+#include "esp_err.h"
+#include "nvs_flash.h"
 #include "driver/uart.h"
 #include "linenoise/linenoise.h"
 #include "argtable3/argtable3.h"
 
 #include "my_cmd.h"
+#include "my_wifista.h"
 #include "myconfig.h"
 
 static void ledTask(void *pvParameter){
@@ -25,6 +28,15 @@ static void ledTask(void *pvParameter){
         gpio_set_level(BLINK_GPIO, 1);
         vTaskDelay(BLINK_DELAY / portTICK_PERIOD_MS);
     }
+}
+
+static void nvsInit(void){
+    esp_err_t ret = nvs_flash_init();
+    if(ret==ESP_ERR_NVS_NO_FREE_PAGES || ret==ESP_ERR_NVS_NEW_VERSION_FOUND){
+        ESP_ERROR_CHECK(nvs_flash_erase());
+        ret = nvs_flash_init();
+    }
+    ESP_ERROR_CHECK(ret);
 }
 
 static void consoleInit(void){
@@ -61,12 +73,15 @@ static void consoleInit(void){
 void app_main(void){
     const char* prompt = "esp32> ";
 
+    nvsInit();
+
     gpio_reset_pin(BLINK_GPIO);
     gpio_set_direction(BLINK_GPIO, GPIO_MODE_OUTPUT);
 
     consoleInit();
     esp_console_register_help_command();
-    register_commands();
+    registerCommands();
+    wifiInitSTA();
 
     xTaskCreate(&ledTask, "led_task", 512, NULL, 5, NULL);
 

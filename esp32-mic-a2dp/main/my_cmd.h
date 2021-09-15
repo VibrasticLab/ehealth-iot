@@ -2,6 +2,6 @@
 #define _MY_CMD_H_
 
 // Register common system functions: "version", "restart", "free", "heap", "tasks"
-void register_commands(void);
+void registerCommands(void);
 
 #endif

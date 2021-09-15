@@ -30,7 +30,7 @@ static void register_heap(void);
 static void register_version(void);
 static void register_restart(void);
 
-void register_commands(void)
+void registerCommands(void)
 {
     register_free();
     register_heap();
