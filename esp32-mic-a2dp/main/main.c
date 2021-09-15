@@ -32,9 +32,9 @@ static void ledTask(void *pvParameter){
 
 static void nvsInit(void){
     esp_err_t ret = nvs_flash_init();
-    if(ret==ESP_ERR_NVS_NO_FREE_PAGES || ret==ESP_ERR_NVS_NEW_VERSION_FOUND){
-        ESP_ERROR_CHECK(nvs_flash_erase());
-        ret = nvs_flash_init();
+    if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
+      ESP_ERROR_CHECK(nvs_flash_erase());
+      ret = nvs_flash_init();
     }
     ESP_ERROR_CHECK(ret);
 }
@@ -83,7 +83,7 @@ void app_main(void){
     registerCommands();
     wifiInitSTA();
 
-    xTaskCreate(&ledTask, "led_task", 512, NULL, 5, NULL);
+    xTaskCreate(&ledTask, "led_task", 1024, NULL, 5, NULL);
 
     printf("System Configured\n");
 
