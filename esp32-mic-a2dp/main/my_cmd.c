@@ -21,19 +21,16 @@
 #include "argtable3/argtable3.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
-#include "cmd_system.h"
-#include "sdkconfig.h"
 
+#include "my_cmd.h"
 #include "myconfig.h"
-
-static const char *TAG = "cmd_system";
 
 static void register_free(void);
 static void register_heap(void);
 static void register_version(void);
 static void register_restart(void);
 
-void register_system_common(void)
+void register_commands(void)
 {
     register_free();
     register_heap();
@@ -68,14 +65,14 @@ static void register_version(void)
         .hint = NULL,
         .func = &get_version,
     };
-    ESP_ERROR_CHECK( esp_console_cmd_register(&cmd) );
+    esp_console_cmd_register(&cmd);
 }
 
 /** 'restart' command restarts the program */
 
 static int restart(int argc, char **argv)
 {
-    ESP_LOGI(TAG, "Restarting");
+    printf("Restarting");
     esp_restart();
 }
 
@@ -87,7 +84,7 @@ static void register_restart(void)
         .hint = NULL,
         .func = &restart,
     };
-    ESP_ERROR_CHECK( esp_console_cmd_register(&cmd) );
+    esp_console_cmd_register(&cmd);
 }
 
 /** 'free' command prints available heap memory */
@@ -106,7 +103,7 @@ static void register_free(void)
         .hint = NULL,
         .func = &free_mem,
     };
-    ESP_ERROR_CHECK( esp_console_cmd_register(&cmd) );
+    esp_console_cmd_register(&cmd);
 }
 
 /* 'heap' command prints minumum heap size */
@@ -125,5 +122,5 @@ static void register_heap(void)
         .hint = NULL,
         .func = &heap_size,
     };
-    ESP_ERROR_CHECK( esp_console_cmd_register(&heap_cmd) );
+    esp_console_cmd_register(&heap_cmd);
 }

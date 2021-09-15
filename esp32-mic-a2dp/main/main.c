@@ -3,7 +3,6 @@
 #include <string.h>
 
 #include "freertos/FreeRTOS.h"
-#include "freertos/portmacro.h"
 #include "freertos/task.h"
 #include "driver/gpio.h"
 #include "sdkconfig.h"
@@ -15,7 +14,7 @@
 #include "linenoise/linenoise.h"
 #include "argtable3/argtable3.h"
 
-#include "cmd_system.h"
+#include "my_cmd.h"
 #include "myconfig.h"
 
 static void ledTask(void *pvParameter){
@@ -67,7 +66,7 @@ void app_main(void){
 
     consoleInit();
     esp_console_register_help_command();
-    register_system_common();
+    register_commands();
 
     xTaskCreate(&ledTask, "led_task", 512, NULL, 5, NULL);
 
