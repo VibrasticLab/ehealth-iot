@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <string.h>
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
@@ -7,6 +8,8 @@
 #include "esp_event.h"
 #include "esp_log.h"
 #include "nvs_flash.h"
+#include "esp_console.h"
+#include "argtable3/argtable3.h"
 
 #include "lwip/err.h"
 #include "lwip/sys.h"
@@ -34,6 +37,9 @@ static const char *TAG = "wifi station";
 
 static int s_retry_num = 0;
 
+static int have_ip = 0;
+static char strIp[16];
+
 static void event_handler(void* arg, esp_event_base_t event_base,
                                 int32_t event_id, void* event_data)
 {
@@ -53,6 +59,9 @@ static void event_handler(void* arg, esp_event_base_t event_base,
         ESP_LOGI(TAG, "got ip:" IPSTR, IP2STR(&event->ip_info.ip));
         s_retry_num = 0;
         xEventGroupSetBits(s_wifi_event_group, WIFI_CONNECTED_BIT);
+        
+        have_ip = 1;
+        sprintf(strIp, IPSTR, IP2STR(&event->ip_info.ip));
     }
 }
 
@@ -115,11 +124,14 @@ void wifiInitSTA(void)
     if (bits & WIFI_CONNECTED_BIT) {
         ESP_LOGI(TAG, "connected to ap SSID:%s password:%s",
                  EXAMPLE_ESP_WIFI_SSID, EXAMPLE_ESP_WIFI_PASS);
+        have_ip = 1;
     } else if (bits & WIFI_FAIL_BIT) {
         ESP_LOGI(TAG, "Failed to connect to SSID:%s, password:%s",
                  EXAMPLE_ESP_WIFI_SSID, EXAMPLE_ESP_WIFI_PASS);
+        have_ip = 0;
     } else {
         ESP_LOGE(TAG, "UNEXPECTED EVENT");
+        have_ip = 0;
     }
 
     /* The event will not be processed after unregister */
@@ -128,4 +140,26 @@ void wifiInitSTA(void)
     vEventGroupDelete(s_wifi_event_group);
 
     ESP_LOGI(TAG, "ESP_WIFI_MODE_STA");
+}
+
+static int get_ip(int argc, char **argv)
+{
+    if(have_ip==1){
+        printf("Configured IP: %s\n",strIp);
+    }
+    else{
+        printf("No IP Configured\n");
+    }   
+    return 0;
+}
+
+void registerWifi(void)
+{
+    const esp_console_cmd_t cmd = {
+        .command = "ip",
+        .help = "Get configured IP",
+        .hint = NULL,
+        .func = &get_ip,
+    };
+    esp_console_cmd_register(&cmd);
 }

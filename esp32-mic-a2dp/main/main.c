@@ -80,8 +80,11 @@ void app_main(void){
 
     consoleInit();
     esp_console_register_help_command();
+    
     registerCommands();
+    
     wifiInitSTA();
+    registerWifi();
 
     xTaskCreate(&ledTask, "led_task", 1024, NULL, 5, NULL);
 
