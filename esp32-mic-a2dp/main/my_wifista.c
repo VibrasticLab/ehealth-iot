@@ -16,8 +16,8 @@
 
 #include "my_wifista.h"
 
-#define MY_ESP_WIFI_SSID        "CobaMQTT"
-#define MY_ESP_WIFI_PASSWORD    "cobamqtt"
+#define MY_ESP_WIFI_SSID        "vibrastic"
+#define MY_ESP_WIFI_PASSWORD    "bismillah"
 #define MY_ESP_MAXIMUM_RETRY    5
 
 #define EXAMPLE_ESP_WIFI_SSID      MY_ESP_WIFI_SSID
