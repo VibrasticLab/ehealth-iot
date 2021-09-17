@@ -66,7 +66,7 @@ AR		:= $(XTENSA_TOOLS_ROOT)/xtensa-lx106-elf-ar
 LD		:= $(XTENSA_TOOLS_ROOT)/xtensa-lx106-elf-gcc
 
 # chip specific options on flashing
-CHIP_OPTS   = -fs 32m -ff 40m -fm dout
+CHIP_OPTS   = -fs 4MB -ff 40m -fm dout
 
 
 
