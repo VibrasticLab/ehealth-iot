@@ -1,3 +1,11 @@
+/**
+ * @file    myconfig.h
+ * @brief   Global config header.
+ *
+ * @addtogroup Main
+ * @{
+ */
+
 #ifndef _MY_CONFIG_H_
 #define _MY_CONFIG_H_
 
@@ -7,3 +15,5 @@
 #define CONFIG_ESP_CONSOLE_UART_NUM 0
 
 #endif
+
+/** @} */
