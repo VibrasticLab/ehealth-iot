@@ -6,6 +6,7 @@
  * @{
  */
 
+#include "my_mic.h"
 #include "my_nvs.h"
 #include "my_led.h"
 #include "my_cmd.h"
@@ -20,7 +21,8 @@
 void app_main(void){
     nvsInit();
     ledInit();
-    wifiInitSTA();
+    //wifiInitSTA();
+    micInit();
     shellInit();
 
     while(1){
