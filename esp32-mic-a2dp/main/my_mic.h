@@ -4,6 +4,5 @@
 #include <inttypes.h>
 
 void micInit(void);
-void micRaw(uint16_t* buffRaw);
 
 #endif

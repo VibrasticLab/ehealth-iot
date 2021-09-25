@@ -10,12 +10,58 @@
 #include "freertos/event_groups.h"
 #include "esp_system.h"
 #include "esp_now.h"
+#include "esp_console.h"
 #include "driver/i2s.h"
+#include "driver/uart.h"
+#include "argtable3/argtable3.h"
 
 #include "my_mic.h"
 #include "myconfig.h"
 
-uint16_t rec16[ESP_NOW_MAX_DATA_LEN] = {0};
+uint8_t recStatus;
+
+static void micRaw(uint16_t* buffRaw){
+    int i, samplesRead;
+    size_t bytesRead = 0;
+    uint8_t buff32[ESP_NOW_MAX_DATA_LEN*4] = {0};
+
+    i2s_read(I2S_NUM_0, &buff32, sizeof(buff32), &bytesRead, 100);
+    samplesRead = bytesRead/4;
+
+    for(i=0;i<samplesRead;i++){
+        uint8_t mid = buff32[i*4+2];
+        uint8_t msb = buff32[i+4+3];
+        uint16_t raw = (((uint32_t)msb)<<8) + ((uint32_t)mid);
+        memcpy(&buffRaw[i], &raw, sizeof(raw)); 
+    }
+}
+
+static void micTask(void *pvParameter){
+    uint16_t rec16[ESP_NOW_MAX_DATA_LEN] = {0};
+    recStatus = 0;
+
+    while(1){
+        if(recStatus==1)micRaw(rec16);
+        vTaskDelay(100 / portTICK_PERIOD_MS);
+    }
+}
+
+static int get_raw(int argc, char **argv){
+    if(recStatus==0){recStatus=1;}
+    else{recStatus=0;}
+
+    return 0;
+}
+
+static void micRegister(void){
+    const esp_console_cmd_t cmd = {
+        .command = "mic",
+        .help = "Test Microphone",
+        .hint = NULL,
+        .func = &get_raw,
+    };
+    esp_console_cmd_register(&cmd);
+}
 
 void micInit(void){
 
@@ -47,20 +93,8 @@ void micInit(void){
     if(i2s_set_pin(I2S_NUM_0, &micPin) != ESP_OK){
         printf("I2S pin set error\r\n");
     }
-}
 
-void micRaw(uint16_t* buffRaw){
-    int i, samplesRead;
-    size_t bytesRead = 0;
-    uint8_t buff32[ESP_NOW_MAX_DATA_LEN*4] = {0};
+    xTaskCreate(&micTask, "mic_task", 4096, NULL, 5, NULL);
 
-    i2s_read(I2S_NUM_0, &buff32, sizeof(buff32), &bytesRead, 100);
-    samplesRead = bytesRead/4;
-
-    for(i=0;i<samplesRead;i++){
-        uint8_t mid = buff32[i*4+2];
-        uint8_t msb = buff32[i+4+3];
-        uint16_t raw = (((uint32_t)msb)<<8) + ((uint32_t)mid);
-        memcpy(&buffRaw[i], &raw, sizeof(raw)); 
-    }
+    micRegister();
 }
