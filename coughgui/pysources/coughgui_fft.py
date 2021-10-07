@@ -8,7 +8,6 @@ CoughAnalyzer GUI using tkinter
 # Imports system libraries
 import tkinter as tk
 from tkinter import font
-import pyfftw.interfaces.numpy_fft as fftw
 
 # Import matplotlib libraries
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
@@ -30,7 +29,8 @@ class CoughTk():
     Record = False
     RecLoop = True
     DarkTheme = True
-    AudioLong = 1024
+    AudioLong = 512
+    Fs = 44100
     TitleSPL = 'RMS: 0 dB'
 
     def __init__(self):
@@ -59,19 +59,28 @@ class CoughTk():
         # Pack Button Frame
         self.btnfrm.pack(side=tk.TOP)
 
+        # open mic before graph
+        device = 'dmic_sv'
+        self.rawinput = alsa.PCM(alsa.PCM_CAPTURE, alsa.PCM_NORMAL, channels=2, rate=44100,format=alsa.PCM_FORMAT_S16_LE, periodsize=self.AudioLong, device=device)
+
         # Graph Frame
         self.graphfrm = tk.Frame()
 
-        # Graph Data
-        self.X = []
-        self.Y = []
+        # Graph First Data
+        long, indata = self.rawinput.read()
+        if long:
+            dataY = np.frombuffer(indata, dtype='i2' ) / 32768
+            if len(dataY) > 0:
+                self.Y = np.abs(np.fft.rfft(dataY))
+                self.X = np.fft.rfftfreq(len(dataY)) * self.Fs
 
         # Example Figure Plot
         self.fig = Figure(figsize=(5, 4), dpi=100,facecolor='black')
         self.ax = self.fig.add_subplot(111)
         self.ax.set_facecolor('black')
-        self.ax.set_ylim(-1,1)
-        self.line, = self.ax.plot(self.X, self.Y)
+        self.ax.set_xlim(25,20000)
+        self.ax.grid(True,which='both',ls='-')
+        self.line, = self.ax.loglog(self.X, self.Y)
 
         style.use('ggplot')
         self.canvas = FigureCanvasTkAgg(self.fig, master=self.graphfrm)
@@ -101,8 +110,6 @@ class CoughTk():
         self.ani._start()
 
         # start mic routine
-        device = 'dmic_sv'
-        self.rawinput = alsa.PCM(alsa.PCM_CAPTURE, alsa.PCM_NORMAL, channels=2, rate=44100,format=alsa.PCM_FORMAT_S16_LE, periodsize=self.AudioLong, device=device)
         thd(target=self.recprocess).start()
 
         # start record loop
@@ -137,7 +144,6 @@ class CoughTk():
         """ Record Process Loop"""
 
         unprinted = 'nan'
-        fs = 48000
 
         while self.RecLoop:
             if self.Record:
@@ -147,13 +153,12 @@ class CoughTk():
                     dataY = np.frombuffer(indata, dtype='i2' ) / 32768
 
                     if len(dataY) > 0:
-                        self.Y = np.abs(np.fft.fft(dataY))
-                        self.X = np.fft.fftfreq(len(dataY)) * fs
+                        self.Y = np.abs(np.fft.rfft(dataY))
+                        self.X = np.fft.rfftfreq(len(dataY)) * self.Fs
 
                     self.TitleSPL = 'RMS: %5.2f dB' % (self.rms(dataY,117))
                     if not unprinted in self.TitleSPL:
                         self.lbltitle.config(text=self.TitleSPL)
-                    sleep(0.01)
 
     def graphupdate(self,args):
         """ Refresh Plot using new data"""
