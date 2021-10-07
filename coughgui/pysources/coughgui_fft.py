@@ -29,7 +29,7 @@ class CoughTk():
     Record = False
     RecLoop = True
     DarkTheme = True
-    AudioLong = 512
+    AudioLong = 4096
     Fs = 44100
     TitleSPL = 'RMS: 0 dB'
 
