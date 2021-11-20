@@ -135,6 +135,9 @@ class CoughTk():
 
                 if long:
                     self.Y = np.frombuffer(indata, dtype='i2' ) / 32768
+                    RMS = round(20*np.log10(np.sqrt(np.mean(np.square(self.Y))))+117,2)
+                    txtRMS = 'RMS: %5.2f dB' % RMS
+                    self.lbltitle.config(text=txtRMS)
                     sleep(0.01)
 
     def graphupdate(self,args):
