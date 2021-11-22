@@ -3,6 +3,7 @@
  * cross-reference with: https://github.com/runnisha477/Audio-Input-PCMI2S/blob/main/audio_record.ino
  */
 
+#include <stdint.h>
 #include <stdio.h>
 #include <string.h>
 #include "freertos/FreeRTOS.h"
@@ -32,16 +33,22 @@ static void micRaw(uint16_t* buffRaw){
         uint8_t mid = buff32[i*4+2];
         uint8_t msb = buff32[i+4+3];
         uint16_t raw = (((uint32_t)msb)<<8) + ((uint32_t)mid);
-        memcpy(&buffRaw[i], &raw, sizeof(raw)); 
+        memcpy(&buffRaw[i], &raw, sizeof(raw));
     }
 }
 
 static void micTask(void *pvParameter){
+    uint16_t i;
     uint16_t rec16[ESP_NOW_MAX_DATA_LEN] = {0};
     recStatus = 0;
 
     while(1){
-        if(recStatus==1)micRaw(rec16);
+        if(recStatus==1){
+            micRaw(rec16);
+            for(i=0;i<ESP_NOW_MAX_DATA_LEN;i++){
+                printf("%i ",rec16[i]);
+            }
+        }
         vTaskDelay(100 / portTICK_PERIOD_MS);
     }
 }
