@@ -1,6 +1,5 @@
 /**
  * example in use: https://www.esp32.com/viewtopic.php?t=15185
- * cross-reference with: https://github.com/runnisha477/Audio-Input-PCMI2S/blob/main/audio_record.ino
  */
 
 #include <stdint.h>
@@ -21,12 +20,13 @@
 
 uint8_t recStatus;
 
-static void micRaw(uint16_t* buffRaw){
+static int micRaw(uint16_t* buffRaw){
+    esp_err_t errMic;
     int i, samplesRead;
     size_t bytesRead = 0;
     uint8_t buff32[ESP_NOW_MAX_DATA_LEN*4] = {0};
 
-    i2s_read(I2S_NUM_0, &buff32, sizeof(buff32), &bytesRead, 100);
+    errMic = i2s_read(I2S_NUM_0, &buff32, sizeof(buff32), &bytesRead, 500);
     samplesRead = bytesRead/4;
 
     for(i=0;i<samplesRead;i++){
@@ -35,22 +35,43 @@ static void micRaw(uint16_t* buffRaw){
         uint16_t raw = (((uint32_t)msb)<<8) + ((uint32_t)mid);
         memcpy(&buffRaw[i], &raw, sizeof(raw));
     }
+
+    if(errMic!=ESP_OK)printf("MIC_ERROR\r\n");
+
+    return samplesRead;
 }
 
 static void micTask(void *pvParameter){
+    int read;
     uint16_t i;
     uint16_t rec16[ESP_NOW_MAX_DATA_LEN] = {0};
     recStatus = 0;
 
     while(1){
         if(recStatus==1){
-            micRaw(rec16);
-            for(i=0;i<ESP_NOW_MAX_DATA_LEN;i++){
-                printf("%i ",rec16[i]);
+            read = micRaw(rec16);
+            for(i=0;i<read;i++){
+                printf("%i,",rec16[i]);
             }
+            printf("0\r\n");
         }
         vTaskDelay(100 / portTICK_PERIOD_MS);
     }
+}
+
+static int micGet(int argc, char **argv){
+    int read;
+    uint16_t i;
+    uint16_t rec16[ESP_NOW_MAX_DATA_LEN] = {0};
+    recStatus = 0;
+
+    read = micRaw(rec16);
+    for(i=0;i<read;i++){
+        printf("%i ",rec16[i]);
+    }
+    printf("0\r\n");
+
+    return 0;
 }
 
 static int get_raw(int argc, char **argv){
@@ -67,7 +88,16 @@ static void micRegister(void){
         .hint = NULL,
         .func = &get_raw,
     };
+
+    const esp_console_cmd_t get = {
+        .command = "get",
+        .help = "Test Microphone One Time",
+        .hint = NULL,
+        .func = &micGet,
+    };
+
     esp_console_cmd_register(&cmd);
+    esp_console_cmd_register(&get);
 }
 
 void micInit(void){
@@ -81,7 +111,7 @@ void micInit(void){
         .intr_alloc_flags = ESP_INTR_FLAG_LEVEL1,
         .dma_buf_count = 4,
         .dma_buf_len = ESP_NOW_MAX_DATA_LEN * 4,
-        .use_apll = false,
+        .use_apll = true,
         .tx_desc_auto_clear = false,
         .fixed_mclk = 0,
     };
@@ -93,8 +123,8 @@ void micInit(void){
     i2s_pin_config_t micPin = {
         .bck_io_num = 14,
         .ws_io_num = 15,
-        .data_out_num = -1,
-        .data_in_num = 13,
+        .data_out_num = I2S_PIN_NO_CHANGE,
+        .data_in_num = 34, // or 23
     };
 
     if(i2s_set_pin(I2S_NUM_0, &micPin) != ESP_OK){
