@@ -71,7 +71,7 @@ void shellInit(void){
                "Your terminal program does not support escape sequences.\n"
                "Line editing and history features are disabled.\n");
         linenoiseSetDumbMode(1);
-    }    
+    }
 }
 
 int shellLoop(void){

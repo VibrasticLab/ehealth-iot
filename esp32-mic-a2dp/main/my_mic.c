@@ -26,7 +26,7 @@ static int micRaw(uint16_t* buffRaw){
     size_t bytesRead = 0;
     uint8_t buff32[ESP_NOW_MAX_DATA_LEN*4] = {0};
 
-    errMic = i2s_read(I2S_NUM_0, &buff32, sizeof(buff32), &bytesRead, 500);
+    errMic = i2s_read(I2S_NUM_0, &buff32, sizeof(buff32), &bytesRead, 100);
     samplesRead = bytesRead/4;
 
     for(i=0;i<samplesRead;i++){
@@ -42,34 +42,36 @@ static int micRaw(uint16_t* buffRaw){
 }
 
 static void micTask(void *pvParameter){
-    int read;
+    int vread;
     uint16_t i;
     uint16_t rec16[ESP_NOW_MAX_DATA_LEN] = {0};
     recStatus = 0;
 
     while(1){
         if(recStatus==1){
-            read = micRaw(rec16);
-            for(i=0;i<read;i++){
+            vread = micRaw(rec16);
+            printf("{");
+            for(i=0;i<vread;i++){
                 printf("%i,",rec16[i]);
             }
-            printf("0\r\n");
+            printf("0}\r\n");
         }
         vTaskDelay(100 / portTICK_PERIOD_MS);
     }
 }
 
 static int micGet(int argc, char **argv){
-    int read;
+    int vread;
     uint16_t i;
     uint16_t rec16[ESP_NOW_MAX_DATA_LEN] = {0};
     recStatus = 0;
 
-    read = micRaw(rec16);
-    for(i=0;i<read;i++){
-        printf("%i ",rec16[i]);
+    vread = micRaw(rec16);
+    printf("{");
+    for(i=0;i<vread;i++){
+        printf("%i,",rec16[i]);
     }
-    printf("0\r\n");
+    printf("0}\r\n");
 
     return 0;
 }
@@ -84,14 +86,14 @@ static int get_raw(int argc, char **argv){
 static void micRegister(void){
     const esp_console_cmd_t cmd = {
         .command = "mic",
-        .help = "Test Microphone",
+        .help = "Test 250 data Mic (loop)",
         .hint = NULL,
         .func = &get_raw,
     };
 
     const esp_console_cmd_t get = {
         .command = "get",
-        .help = "Test Microphone One Time",
+        .help = "Test 250 data Mic (once)",
         .hint = NULL,
         .func = &micGet,
     };
