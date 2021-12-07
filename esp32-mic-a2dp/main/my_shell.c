@@ -19,7 +19,11 @@
 #include "my_wifista.h"
 #include "myconfig.h"
 
+#if UART_USE_PROMPT
 const char* prompt = "esp32> ";
+#else
+const char* prompt = "";
+#endif
 
 static void consoleInit(void){
     fflush(stdout);

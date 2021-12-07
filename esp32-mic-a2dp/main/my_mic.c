@@ -50,11 +50,10 @@ static void micTask(void *pvParameter){
     while(1){
         if(recStatus==1){
             vread = micRaw(rec16);
-            printf("{");
             for(i=0;i<vread;i++){
                 printf("%i,",rec16[i]);
             }
-            printf("0}\r\n");
+            printf("0\r\n");
         }
         vTaskDelay(100 / portTICK_PERIOD_MS);
     }
@@ -67,11 +66,10 @@ static int micGet(int argc, char **argv){
     recStatus = 0;
 
     vread = micRaw(rec16);
-    printf("{");
     for(i=0;i<vread;i++){
         printf("%i,",rec16[i]);
     }
-    printf("0}\r\n");
+    printf("0\r\n");
 
     return 0;
 }
