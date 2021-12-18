@@ -25,6 +25,7 @@
 	+ [SSH Login](https://github.com/VibrasticLab/ehealth-iot/blob/master/reports/rpi_setup.md#ssh-login)
 	+ [LCD Waveshare35](https://github.com/VibrasticLab/ehealth-iot/blob/master/reports/rpi_setup.md#lcd-waveshare35)
 	+ [I2S Microphone](https://github.com/VibrasticLab/ehealth-iot/blob/master/reports/rpi_setup.md#i2s-microphone)
+	+ [I2S Microphone](https://github.com/VibrasticLab/ehealth-iot/blob/master/reports/rpi_setup.md#faster-running)
 
 ## Pre-Requisites
 
@@ -607,4 +608,21 @@ arecord -D dmic_sv -c2 -r 44100 -f S16_LE -t wav -V mono -v record.wav
 
 **Tips:** If need Python wrapper for ALSA, you can install this [AUR Package](https://aur.archlinux.org/packages/python-pyalsaaudio/)
 
+### Faster Running
 
+#### disable some boot options
+
+```sh
+echo "
+boot_delay=0
+disable_splash=1" >> /boot/config.txt
+echo "dtoverlay=disable-bt" >> /boot/config.txt # if not using bluetooth
+```
+
+#### overclock to 1.8GHz
+
+```sh
+echo "
+over_voltage=2
+arm_freq=1800" >> /boot/config.txt
+```
