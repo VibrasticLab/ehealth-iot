@@ -15,7 +15,7 @@ if __name__ == "__main__":
     rec_run = 0
     rec_flag = False
     
-    with open("./record_status","w") as f:
+    with open("/home/alarm/record_status","w") as f:
         f.write('false')
 
     while loops > 0:
@@ -27,10 +27,10 @@ if __name__ == "__main__":
                 print(rec_run)
             else:
                 rec_flag = False
-                with open("./record_status","w") as f:
+                with open("/home/alarm/record_status","w") as f:
                     f.write('false')
         else:
-            with open("record_status", "r") as stt:
+            with open("/home/alarm/record_status", "r") as stt:
                 rec_stt = stt.read()
             
             if rec_stt == 'true':

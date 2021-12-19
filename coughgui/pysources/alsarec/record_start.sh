@@ -1,3 +1,3 @@
 #!/usr/bin/bash
 
-echo -e "true\c" > record_status
+echo -e "true\c" > /home/alarm/record_status

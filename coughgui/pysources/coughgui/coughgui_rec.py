@@ -31,8 +31,15 @@ class CoughTk():
     DarkTheme = True
     AudioLong = 512
 
+    RecRun = 0
+    RecFlag = False
+
     def __init__(self):
         super(CoughTk, self).__init__()
+
+        # Create record control file
+        with open("/home/alarm/record_status","w") as f:
+            f.write('false')
 
         # Main Window
         self.window = tk.Tk()
@@ -40,7 +47,7 @@ class CoughTk():
         self.window.title("Tk CoughAnalyzer")
 
         # Title Label
-        self.lbltitle = tk.Label(self.window, text="Cough Analyzer Program")
+        self.lbltitle = tk.Label(self.window, text="Not Recording")
         self.lbltitle.pack(side=tk.TOP)
 
         # Button Frame
@@ -134,7 +141,27 @@ class CoughTk():
                 long, indata = self.rawinput.read()
 
                 if long:
-                    self.Y = np.frombuffer(indata, dtype='i2' ) / 32768
+                    rawdata = np.frombuffer(indata, dtype='i2' )
+                    self.Y = rawdata / 32768
+
+                    if self.RecFlag:
+                        if self.RecRun > 0:
+                            self.RecRun -= 1
+                        else:
+                            self.RecFlag = False
+                            RecTitle = 'Not Recording'
+                            self.lbltitle.config(text=RecTitle)
+                            with open("/home/alarm/record_status","w") as f:
+                                f.write('false')
+                    else:
+                        with open("/home/alarm/record_status", "r") as stt:
+                            RecStt = stt.read()
+
+                        if RecStt == 'true':
+                            self.RecRun = 100
+                            RecTitle = 'RECORDING'
+                            self.lbltitle.config(text=RecTitle)
+                            self.RecFlag = True
 
                     sleep(0.01)
 
