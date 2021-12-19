@@ -114,7 +114,7 @@ sudo arch-chroot /mnt/root /bin/bash
 
 ---
 
-## Upgrades Installed Package 
+## Upgrades Installed Package
 
 ### Initialize Pacman Key
 
@@ -231,7 +231,7 @@ wget -i ../../install_pkgs.txt
 cd ../../
 ```
 
-copy downloaded required package files 
+copy downloaded required package files
 
 ```sh
 sudo rsync -avh packages/official/ /mnt/root/var/cache/pacman/pkg/
@@ -604,6 +604,12 @@ for playback:
 
 ```sh
 arecord -D dmic_sv -c2 -r 44100 -f S16_LE -t wav -V mono -v record.wav
+```
+
+for raw PCM playback you can use ffmpeg:
+
+```sh
+ffplay -f s32le -ar 44100 -ac 2 out.raw
 ```
 
 **Tips:** If need Python wrapper for ALSA, you can install this [AUR Package](https://aur.archlinux.org/packages/python-pyalsaaudio/)
