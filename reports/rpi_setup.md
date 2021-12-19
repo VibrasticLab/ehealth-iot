@@ -606,10 +606,10 @@ for playback:
 arecord -D dmic_sv -c2 -r 44100 -f S16_LE -t wav -V mono -v record.wav
 ```
 
-for raw PCM playback you can use ffmpeg:
+for raw PCM playback:
 
 ```sh
-ffplay -f s16le -ar 44100 -ac 2 out.raw
+aplay -r 44100 -f S16_LE -c 2 out.raw
 ```
 
 **Tips:** If need Python wrapper for ALSA, you can install this [AUR Package](https://aur.archlinux.org/packages/python-pyalsaaudio/)
