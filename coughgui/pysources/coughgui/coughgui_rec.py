@@ -17,6 +17,7 @@ from matplotlib import style
 
 # Import others libraries
 import os
+import requests
 import numpy as np
 import random as rnd
 from time import sleep
@@ -134,6 +135,11 @@ class CoughTk():
         self.RecLoop = False
         self.window.destroy()
 
+    def sendrecord(self,recfile):
+        files = {'upload_file': open(recfile,"rb")}
+        values = {'nama': 'pasien', 'gender': 'unknown', 'umur': 0}
+        req = requests.post("http://10.124.5.198/api/device/sendData/303",files=files, data=values)
+
     def recprocess(self):
         """ Record Process Loop"""
 
@@ -150,10 +156,16 @@ class CoughTk():
                             self.RawOut.write(indata)
                         else:
                             self.RecFlag = False
-                            RecTitle = 'Not Recording'
-                            self.lbltitle.config(text=RecTitle)
                             self.RawOut.flush()
                             self.RawOut.close()
+
+                            RecTitle = 'Sending Data'
+                            self.lbltitle.config(text=RecTitle)
+                            self.sendrecord("/home/alarm/out.raw")
+
+                            RecTitle = 'Not Recording'
+                            self.lbltitle.config(text=RecTitle)
+
                             with open("/home/alarm/record_status","w") as f:
                                 f.write('false')
                     else:
@@ -161,7 +173,7 @@ class CoughTk():
                             RecStt = stt.read()
 
                         if RecStt == 'true':
-                            self.RecRun = 500
+                            self.RecRun = 300
                             RecTitle = 'RECORDING'
                             self.lbltitle.config(text=RecTitle)
                             with open("/home/alarm/out.raw","w") as out:
