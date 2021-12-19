@@ -269,8 +269,13 @@ echo "alarmrpi" > /etc/hostname
 ### Silent Kernel/Systemd message (Optional)
 
 ```sh
+echo 'boot_delay=0' >> /boot/config.txt
+echo 'disable_splash=1' >> /boot/config.txt
 sed -i '$s/$/ audit=0 quiet loglevel=0/' /boot/cmdline.txt
 echo 'kernel.printk = 3 3 3 3' > /etc/sysctl.d/20-quiet-printk.conf
+
+# if not using bluetooth
+echo 'dtoverlay=disable-bt' >> /boot/config.txt
 ```
 
 ### Generate new English locale
@@ -614,21 +619,3 @@ aplay -r 44100 -f S16_LE -c 2 out.raw
 
 **Tips:** If need Python wrapper for ALSA, you can install this [AUR Package](https://aur.archlinux.org/packages/python-pyalsaaudio/)
 
-### Faster Running
-
-#### disable some boot options
-
-```sh
-echo "
-boot_delay=0
-disable_splash=1" >> /boot/config.txt
-echo "dtoverlay=disable-bt" >> /boot/config.txt # if not using bluetooth
-```
-
-#### overclock to 1.8GHz
-
-```sh
-echo "
-over_voltage=2
-arm_freq=1800" >> /boot/config.txt
-```

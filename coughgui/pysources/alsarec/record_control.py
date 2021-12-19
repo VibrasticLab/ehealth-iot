@@ -37,9 +37,4 @@ if __name__ == "__main__":
                 rec_flag = True
                 rec_run = 10
         
-        tm.sleep(0.5)
-
-
-
-
-
+        tm.sleep(0.01)
