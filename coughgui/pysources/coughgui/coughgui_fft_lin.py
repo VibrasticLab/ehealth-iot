@@ -70,7 +70,7 @@ class CoughTk():
         self.fig = Figure(figsize=(5, 4), dpi=100,facecolor='black')
         self.ax = self.fig.add_subplot(111)
         self.ax.set_facecolor('black')
-        self.ax.set_xlim(50,8000)
+        self.ax.set_xlim(50,2000)
         self.ax.set_ylim([-10,120])
         self.ax.grid(True,which='both',ls='-')
         self.line, = self.ax.plot(self.X, self.Y)

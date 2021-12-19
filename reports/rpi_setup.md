@@ -253,12 +253,12 @@ pacman -S --noconfirm $(cat /home/alarm/pkglist.txt)
 
 ## Global Configurations
 
-### Workaround no HDMI bug
+### Workaround no HDMI bug  (Optional)
 
 ```sh
+# use only if the problem persist
 echo "hdmi_force_hotplug=1" >> /boot/config.txt
 ```
-
 
 ### Set Hostname (Optional)
 
