@@ -29,7 +29,7 @@ class CoughTk():
     Record = False
     RecLoop = True
     DarkTheme = True
-    AudioLong = 512
+    AudioLong = 1024
 
     def __init__(self):
         super(CoughTk, self).__init__()

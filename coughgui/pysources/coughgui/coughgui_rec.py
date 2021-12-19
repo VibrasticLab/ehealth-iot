@@ -16,6 +16,7 @@ from matplotlib.figure import Figure
 from matplotlib import style
 
 # Import others libraries
+import os
 import numpy as np
 import random as rnd
 from time import sleep
@@ -29,7 +30,7 @@ class CoughTk():
     Record = False
     RecLoop = True
     DarkTheme = True
-    AudioLong = 512
+    AudioLong = 1024
 
     RecRun = 0
     RecFlag = False
@@ -141,16 +142,18 @@ class CoughTk():
                 long, indata = self.rawinput.read()
 
                 if long:
-                    rawdata = np.frombuffer(indata, dtype='i2' )
-                    self.Y = rawdata / 32768
+                    self.Y = np.frombuffer(indata, dtype='i2' ) /32768
 
                     if self.RecFlag:
                         if self.RecRun > 0:
                             self.RecRun -= 1
+                            self.RawOut.write(indata)
                         else:
                             self.RecFlag = False
                             RecTitle = 'Not Recording'
                             self.lbltitle.config(text=RecTitle)
+                            self.RawOut.flush()
+                            self.RawOut.close()
                             with open("/home/alarm/record_status","w") as f:
                                 f.write('false')
                     else:
@@ -158,9 +161,12 @@ class CoughTk():
                             RecStt = stt.read()
 
                         if RecStt == 'true':
-                            self.RecRun = 100
+                            self.RecRun = 500
                             RecTitle = 'RECORDING'
                             self.lbltitle.config(text=RecTitle)
+                            with open("/home/alarm/out.raw","w") as out:
+                                out.write('')
+                            self.RawOut = open("/home/alarm/out.raw", "wb")
                             self.RecFlag = True
 
                     sleep(0.01)
