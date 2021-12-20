@@ -161,7 +161,7 @@ class CoughTk():
 
                             RecTitle = 'Sending Data'
                             self.lbltitle.config(text=RecTitle)
-                            self.sendrecord("/home/alarm/out.raw")
+                            #self.sendrecord("/home/alarm/out.raw")
 
                             RecTitle = 'Not Recording'
                             self.lbltitle.config(text=RecTitle)
@@ -173,7 +173,7 @@ class CoughTk():
                             RecStt = stt.read()
 
                         if RecStt == 'true':
-                            self.RecRun = 300
+                            self.RecRun = 200
                             RecTitle = 'RECORDING'
                             self.lbltitle.config(text=RecTitle)
                             with open("/home/alarm/out.raw","w") as out:
