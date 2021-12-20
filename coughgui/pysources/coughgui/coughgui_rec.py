@@ -17,6 +17,7 @@ from matplotlib import style
 
 # Import others libraries
 import os
+import wave
 import requests
 import numpy as np
 import random as rnd
@@ -36,11 +37,15 @@ class CoughTk():
     RecRun = 0
     RecFlag = False
 
+    RecFileRaw = "/home/alarm/out.raw"
+    RecFileWav = "/home/alarm/out.wav"
+    RecFileStatus = "/home/alarm/record_status"
+
     def __init__(self):
         super(CoughTk, self).__init__()
 
         # Create record control file
-        with open("/home/alarm/record_status","w") as f:
+        with open(self.RecFileStatus,"w") as f:
             f.write('false')
 
         # Main Window
@@ -135,10 +140,19 @@ class CoughTk():
         self.RecLoop = False
         self.window.destroy()
 
-    def sendrecord(self,recfile):
-        files = {'upload_file': open(recfile,"rb")}
-        values = {'nama': 'pasien', 'gender': 'unknown', 'umur': 0}
-        req = requests.post("http://10.124.5.198/api/device/sendData/303",files=files, data=values)
+    def rawtowav(self):
+        if os.path.exists(self.RecFileRaw):
+            with open(self.RecFileRaw,"rb") as in_raw:
+                rawdata = in_raw.read()
+                with wave.open(self.RecFileWav,"wb") as out_wav:
+                    out_wav.setparams((2, 2, 44100, 0, 'NONE', 'NONE'))
+                    out_wav.writeframesraw(rawdata)
+
+    def sendrecord(self):
+        if os.path.exists(self.RecFileWav):
+            files = {'file_batuk': open(self.RecFileWav,"rb")}
+            values = {'nama': 'pasien', 'gender': 'unknown', 'umur': 0}
+            requests.post("http://10.124.5.198/api/device/sendData/303",files=files, data=values)
 
     def recprocess(self):
         """ Record Process Loop"""
@@ -159,26 +173,30 @@ class CoughTk():
                             self.RawOut.flush()
                             self.RawOut.close()
 
+                            RecTitle = 'Convert to WAV'
+                            self.lbltitle.config(text=RecTitle)
+                            self.rawtowav()
+
                             RecTitle = 'Sending Data'
                             self.lbltitle.config(text=RecTitle)
-                            #self.sendrecord("/home/alarm/out.raw")
+                            self.sendrecord()
 
                             RecTitle = 'Not Recording'
                             self.lbltitle.config(text=RecTitle)
 
-                            with open("/home/alarm/record_status","w") as f:
+                            with open(self.RecFileStatus,"w") as f:
                                 f.write('false')
                     else:
-                        with open("/home/alarm/record_status", "r") as stt:
+                        with open(self.RecFileStatus, "r") as stt:
                             RecStt = stt.read()
 
                         if RecStt == 'true':
                             self.RecRun = 200
                             RecTitle = 'RECORDING'
                             self.lbltitle.config(text=RecTitle)
-                            with open("/home/alarm/out.raw","w") as out:
+                            with open(self.RecFileRaw,"w") as out:
                                 out.write('')
-                            self.RawOut = open("/home/alarm/out.raw", "wb")
+                            self.RawOut = open(self.RecFileRaw, "wb")
                             self.RecFlag = True
 
                     sleep(0.01)
