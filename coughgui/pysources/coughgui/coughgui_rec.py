@@ -40,6 +40,7 @@ class CoughTk():
     RecFileRaw = "/home/alarm/out.raw"
     RecFileWav = "/home/alarm/out.wav"
     RecFileStatus = "/home/alarm/record_status"
+    RecServer = "http://103.147.32.57/api/device/sendData/303"
 
     def __init__(self):
         super(CoughTk, self).__init__()
@@ -152,7 +153,7 @@ class CoughTk():
         if os.path.exists(self.RecFileWav):
             files = {'file_batuk': open(self.RecFileWav,"rb")}
             values = {'nama': 'pasien', 'gender': 'unknown', 'umur': 0}
-            requests.post("http://10.124.5.198/api/device/sendData/303",files=files, data=values)
+            requests.post(self.RecServer,files=files, data=values)
 
     def recprocess(self):
         """ Record Process Loop"""
