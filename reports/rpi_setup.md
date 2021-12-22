@@ -487,7 +487,9 @@ dtparam=spi=on
 dtoverlay=waveshare35a:rotate=270,swapxy=1,speed=80000000" | sudo tee -a /boot/config.txt
 ```
 
-And for touchscreen calibration, run this:
+**Notes:** If need to use potrait orientation, use **rotation=0** or **rotation=180**
+
+And for touchscreen calibration, run this (**only** for rotation=270):
 
 ```sh
 echo 'Section "InputClass"
