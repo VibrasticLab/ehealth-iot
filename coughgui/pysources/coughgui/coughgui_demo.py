@@ -29,18 +29,19 @@ class CoughTk():
     """CoughAnalyzer Program with GUI
     """
 
-    Record = False
-    RecLoop = True
     DarkTheme = True
     AudioLong = 1024
 
     RecRun = 0
     RecFlag = False
 
+    ServerTarget = "http://103.147.32.57"
+    EdgeIP = "0.0.0.0"
+
     RecFileRaw = "/home/alarm/out.raw"
     RecFileWav = "/home/alarm/out.wav"
     RecFileStatus = "/home/alarm/record_status"
-    RecServer = "http://103.147.32.57/api/device/sendData/303"
+    RecServer = ServerTarget + "/api/device/sendData/303"
 
     def __init__(self):
         super(CoughTk, self).__init__()
@@ -62,6 +63,48 @@ class CoughTk():
         # Window Font
         wndfont = font.Font(self.window, family="Liberation Mono", size=15)
         self.lbltitle.config(font=wndfont)
+
+        # Info Frame
+        self.infofrm = tk.Frame(self.window)
+
+        # Status Connection
+        self.EdgeIP = self.getwlanip()
+        self.sttconn = tk.Label(self.infofrm, text=self.EdgeIP)
+        self.sttconn.config(font=wndfont)
+        self.sttconn.pack(side=tk.BOTTOM)
+
+        # Start get IP loop
+        thd_ip = thd(target=self.getipprocess).start()
+
+        # Label Connection
+        self.lblconn = tk.Label(self.infofrm, text="Edge-IP:")
+        self.lblconn.config(font=wndfont)
+        self.lblconn.pack(side=tk.BOTTOM)
+
+        # Status Server
+        self.sttserver = tk.Label(self.infofrm, text=self.ServerTarget)
+        self.sttserver.config(font=wndfont)
+        self.sttserver.pack(side=tk.BOTTOM)
+
+        # Label Server
+        self.lblserver = tk.Label(self.infofrm, text="Server:")
+        self.lblserver.config(font=wndfont)
+        self.lblserver.pack(side=tk.BOTTOM)
+
+        # Send Wav Status
+        txtsendwav = "Send Wav: " + "Inactive"
+        self.sttsendwav = tk.Label(self.infofrm, text=txtsendwav)
+        self.sttsendwav.config(font=wndfont)
+        self.sttsendwav.pack(side=tk.BOTTOM)
+
+        # Recording Status
+        txtrecord = "Recording: " + "Inactive"
+        self.sttrecord = tk.Label(self.infofrm, text=txtrecord)
+        self.sttrecord.config(font=wndfont)
+        self.sttrecord.pack(side=tk.BOTTOM)
+
+        # Pack Info Frame
+        self.infofrm.pack(side=tk.TOP)
 
         # Graph Frame
         self.graphfrm = tk.Frame()
@@ -90,6 +133,13 @@ class CoughTk():
         if self.DarkTheme:
             self.window.config(bg="black")
             self.lbltitle.config(bg='black', fg='white')
+            self.sttrecord.config(bg='black', fg='white')
+            self.sttsendwav.config(bg='black', fg='white')
+            self.lblserver.config(bg='black', fg='white')
+            self.sttserver.config(bg='black', fg='white')
+            self.lblconn.config(bg='black', fg='white')
+            self.sttconn.config(bg='black', fg='white')
+            self.infofrm.config(bg='black')
 
         # start graph animation
         self.ani = animation.FuncAnimation(self.fig, self.graphupdate, interval=0.005, repeat=False)
@@ -98,7 +148,7 @@ class CoughTk():
         # start mic routine
         device = 'dmic_sv'
         self.rawinput = alsa.PCM(alsa.PCM_CAPTURE, alsa.PCM_NORMAL, channels=2, rate=44100,format=alsa.PCM_FORMAT_S16_LE, periodsize=self.AudioLong, device=device)
-        thd(target=self.recprocess).start()
+        thd_mic = thd(target=self.recprocess).start()
 
         # Main Loop
         self.window.mainloop()
@@ -116,6 +166,17 @@ class CoughTk():
             files = {'file_batuk': open(self.RecFileWav,"rb")}
             values = {'nama': 'pasien', 'gender': 'unknown', 'umur': 0}
             requests.post(self.RecServer,files=files, data=values)
+
+    def getwlanip(self):
+        ipv4 = os.popen('ip addr show wlan0 | grep "\<inet\>" | awk \'{ print $2 }\' | awk -F "/" \'{ print $1 }\'').read().strip()
+        return ipv4
+
+    def getipprocess(self):
+        """Get IP Loop"""
+
+        while True:
+            self.EdgeIP = self.getwlanip()
+            sleep(5)
 
     def recprocess(self):
         """ Record Process Loop"""
@@ -135,16 +196,17 @@ class CoughTk():
                         self.RawOut.flush()
                         self.RawOut.close()
 
-                        RecTitle = 'Convert to WAV'
-                        self.lbltitle.config(text=RecTitle)
+                        txtrecord = "Recording: " + "Convert"
+                        self.sttrecord.config(text=txtrecord)
                         self.rawtowav()
+                        txtrecord = "Recording: " + "Inactive"
+                        self.sttrecord.config(text=txtrecord)
 
-                        RecTitle = 'Sending Data'
-                        self.lbltitle.config(text=RecTitle)
+                        txtsendwav = "Send Wav: " + "Active"
+                        self.sttsendwav.config(text=txtsendwav)
                         self.sendrecord()
-
-                        RecTitle = 'Not Recording'
-                        self.lbltitle.config(text=RecTitle)
+                        txtsendwav = "Send Wav: " + "Inactive"
+                        self.sttsendwav.config(text=txtsendwav)
 
                         with open(self.RecFileStatus,"w") as f:
                             f.write('false')
@@ -154,8 +216,8 @@ class CoughTk():
 
                     if RecStt == 'true':
                         self.RecRun = 200
-                        RecTitle = 'RECORDING'
-                        self.lbltitle.config(text=RecTitle)
+                        txtrecord = "Recording: " + "Active"
+                        self.sttrecord.config(text=txtrecord)
                         with open(self.RecFileRaw,"w") as out:
                             out.write('')
                         self.RawOut = open(self.RecFileRaw, "wb")
