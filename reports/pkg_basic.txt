@@ -1,7 +1,7 @@
 base base-devel terminus-font
-linux-raspberrypi4-headers
 bash-completion htop tmux
 nano-syntax-highlighting
+linux-rpi-headers
 
 networkmanager modemmanager
 mobile-broadband-provider-info iftop
@@ -27,7 +27,6 @@ vim-tagbar vim-airline vim-surround
 
 xorg xorg-apps xorg-drivers
 xorg-xinit xorg-fonts xterm
-xf86-video-fbturbo-git
 xinput_calibrator
 
 ttf-dejavu

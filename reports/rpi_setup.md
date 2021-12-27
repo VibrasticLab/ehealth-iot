@@ -57,16 +57,10 @@ yes | sudo mkfs.ext4 ${DEVDISK}2
 
 ## Download ArchLinuxARM Images
 
-### RaspberryPi 4
+### RaspberryPi 2/3/4
 
 ```sh
-wget http://os.archlinuxarm.org/os/ArchLinuxARM-rpi-4-latest.tar.gz
-```
-
-### RaspberryPi 3
-
-```sh
-wget http://os.archlinuxarm.org/os/ArchLinuxARM-rpi-2-latest.tar.gz
+wget http://os.archlinuxarm.org/os/ArchLinuxARM-rpi-armv7-latest.tar.gz
 ```
 
 ## Deploy Image
@@ -85,7 +79,7 @@ sudo mount ${DEVDISK}2 /mnt/root
 mkdir -p armv7h/
 cd armv7h/
 
-sudo bsdtar -xpf ../ArchLinuxARM-rpi-4-latest.tar.gz -C /mnt/root
+sudo bsdtar -xpf ../ArchLinuxARM-rpi-armv7-latest.tar.gz -C /mnt/root
 sudo sync
 
 sudo mv -vf /mnt/root/boot/* /mnt/boot/
@@ -132,16 +126,16 @@ pacman-key --populate archlinuxarm
 ```sh
 mkdir -p databases/;cd databases/
 echo "
-http://mirror.archlinuxarm.org/armv6h/core/core.db
-http://mirror.archlinuxarm.org/armv6h/core/core.files
-http://mirror.archlinuxarm.org/armv6h/extra/extra.db
-http://mirror.archlinuxarm.org/armv6h/extra/extra.files
-http://mirror.archlinuxarm.org/armv6h/community/community.db
-http://mirror.archlinuxarm.org/armv6h/community/community.files
-http://mirror.archlinuxarm.org/armv6h/alarm/alarm.db
-http://mirror.archlinuxarm.org/armv6h/alarm/alarm.files
-http://mirror.archlinuxarm.org/armv6h/aur/aur.db
-http://mirror.archlinuxarm.org/armv6h/aur/aur.files
+http://mirror.archlinuxarm.org/armv7h/core/core.db
+http://mirror.archlinuxarm.org/armv7h/core/core.files
+http://mirror.archlinuxarm.org/armv7h/extra/extra.db
+http://mirror.archlinuxarm.org/armv7h/extra/extra.files
+http://mirror.archlinuxarm.org/armv7h/community/community.db
+http://mirror.archlinuxarm.org/armv7h/community/community.files
+http://mirror.archlinuxarm.org/armv7h/alarm/alarm.db
+http://mirror.archlinuxarm.org/armv7h/alarm/alarm.files
+http://mirror.archlinuxarm.org/armv7h/aur/aur.db
+http://mirror.archlinuxarm.org/armv7h/aur/aur.files
 " > ../dbase.txt
 wget -i ../dbase.txt
 cd ../
@@ -253,7 +247,7 @@ pacman -S --noconfirm $(cat /home/alarm/pkglist.txt)
 
 ## Global Configurations
 
-### Workaround no HDMI bug  (Optional)
+### workaround no HDMI bug (Optional)
 
 ```sh
 # use only if the problem persist
