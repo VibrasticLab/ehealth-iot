@@ -335,6 +335,12 @@ systemctl enable sshd.service
 cat /boot/config.txt | grep vc4
 ```
 
+##### dedicated gpu memory size
+
+```sh
+echo "gpu_mem=128" >> /boot/config.txt
+```
+
 ##### fbdev config file
 
 ```sh
