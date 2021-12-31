@@ -327,6 +327,25 @@ AllowTcpForwarding yes
 systemctl enable sshd.service
 ```
 
+### Xorg Configuration
+
+##### check vc4-kms-v3d driver
+
+```sh
+cat /boot/config.txt | grep vc4
+```
+
+##### fbdev config file
+
+```sh
+echo 'Section "Device"
+	Identifier	"FBDEV"
+	Driver		"fbdev"
+	Option		"fbdev" "/dev/fb0"
+	Option		"SwapbufferWait" "true"
+EndSection' > /etc/X11/xorg.conf.d/99-fbdev.conf
+```
+
 ### Shell Autologin
 
 ```sh
