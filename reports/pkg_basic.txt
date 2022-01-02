@@ -1,9 +1,12 @@
 base base-devel terminus-font
 bash-completion htop tmux
 nano-syntax-highlighting
-linux-rpi-headers
+linux-rpi-headers dkms
 
-networkmanager modemmanager
+posix posix-software-development
+posix-xsi posix-c-development
+
+networkmanager modemmanager usbutils
 mobile-broadband-provider-info iftop
 bind-tools netctl ppp wpa_supplicant
 tcpdump fping gnu-netcat inetutils

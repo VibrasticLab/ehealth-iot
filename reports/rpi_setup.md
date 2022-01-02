@@ -338,7 +338,7 @@ cat /boot/config.txt | grep vc4
 ##### dedicated gpu memory size
 
 ```sh
-echo "gpu_mem=256" >> /boot/config.txt
+echo "gpu_mem=128" >> /boot/config.txt
 ```
 
 ##### fbdev config file
@@ -471,6 +471,16 @@ sshfs alarm@192.168.X.YYY:/home/alarm sshmnt/
 
 **CAUTION**: After this section, all next instructions are done in SSH/SSHFS into actual running RaspberryPi or using connected keyboard-display.
 **NOT** chrooted in local shell.
+
+### DKMS Build Directory
+
+In case you need some DKMS drivers, softlink "arm" build directory as "armv7l" so DKMS build can find it.
+
+```sh
+cd /usr/lib/modules/$(uname -r)/build/arch/
+sudo ln -svf arm armv7l
+cd ~
+```
 
 ### LCD Waveshare35
 
