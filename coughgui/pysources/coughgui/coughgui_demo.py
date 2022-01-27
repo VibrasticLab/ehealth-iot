@@ -35,7 +35,7 @@ class CoughTk():
     RecRun = 0
     RecFlag = False
 
-    ServerTarget = "http://103.147.32.57"
+    ServerTarget = "http://103.147.32.143"
     EdgeIP = "0.0.0.0"
 
     RecFileRaw = "/home/alarm/out.raw"

@@ -29,7 +29,7 @@
 
 ## Pre-Requisites
 
-These instructions done in ArchLinux in my laptops (except otherwise stated).
+These instructions done in ArchLinux in laptops (except otherwise stated).
 
 You can also use Manjaro or even Ubuntu/LinuxMint, but not Windows.
 
@@ -88,11 +88,23 @@ sudo sync
 sudo umount /mnt/root /mnt/boot
 ```
 
+**Notes**: This *armv7h* folder will be the default working directory
+
 ## Chroot Into MMC
 
 Chrooting is process to mount other filesystem and change root shell into it.
 
 First install Qemu ARM Static from this [AUR Package](https://aur.archlinux.org/packages/qemu-user-static-bin/)
+
+Mount the MMC
+
+```sh
+sudo fdisk -l
+export DEVDISK='/dev/sdb'
+
+sudo mount ${DEVDISK}2 /mnt/root
+sudo mount ${DEVDISK}1 /mnt/root/boot
+```
 
 Copy the binary into mounted MMC
 
@@ -250,8 +262,8 @@ pacman -S --noconfirm $(cat /home/alarm/pkglist.txt)
 ### workaround no HDMI bug (Optional)
 
 ```sh
-# use only if the problem persist
-echo "hdmi_force_hotplug=1" >> /boot/config.txt
+echo "
+hdmi_force_hotplug=1" >> /boot/config.txt
 ```
 
 ### Set Hostname (Optional)
@@ -263,8 +275,10 @@ echo "alarmrpi" > /etc/hostname
 ### Silent Kernel/Systemd message (Optional)
 
 ```sh
-echo 'boot_delay=0' >> /boot/config.txt
-echo 'disable_splash=1' >> /boot/config.txt
+echo '
+boot_delay=0
+disable_splash=1' >> /boot/config.txt
+
 sed -i '$s/$/ audit=0 quiet loglevel=0/' /boot/cmdline.txt
 echo 'kernel.printk = 3 3 3 3' > /etc/sysctl.d/20-quiet-printk.conf
 
@@ -284,7 +298,7 @@ locale-gen
 ### Disable sudo passwords
 
 ```sh
-echo "%wheel ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+echo "%wheel ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoersecho
 passwd -d root
 passwd -d alarm
 ```
@@ -383,7 +397,7 @@ sudo umount /mnt/root/boot/
 sudo umount /mnt/root/
 ```
 
-Now you can boot MMC into actual RaspberryPi 4 or 3 unit
+Now you can boot MMC into actual RaspberryPi 2/3/4 unit
 
 ## Spesific Configurations
 
@@ -459,7 +473,7 @@ fi
 ```
 
 
-**Tips:** You can use SSHFS to mount a directory in RaspberryPi into you local directory
+**Tips:** You can use SSHFS to mount a directory in RaspberryPi into you local directory.
 Install [sshfs](https://archlinux.org/packages/community/x86_64/sshfs/) then you can mount using command
 
 ```sh
@@ -472,7 +486,9 @@ sshfs alarm@192.168.X.YYY:/home/alarm sshmnt/
 **CAUTION**: After this section, all next instructions are done in SSH/SSHFS into actual running RaspberryPi or using connected keyboard-display.
 **NOT** chrooted in local shell.
 
-### DKMS Build Directory
+### Bugfixes
+
+##### DKMS Build Directory
 
 In case you need some DKMS drivers, softlink "arm" build directory as "armv7l" so DKMS build can find it.
 
@@ -480,6 +496,14 @@ In case you need some DKMS drivers, softlink "arm" build directory as "armv7l" s
 cd /usr/lib/modules/$(uname -r)/build/arch/
 sudo ln -svf arm armv7l
 cd ~
+```
+
+##### LibBLAS
+
+In case BLAS implementation undetected by NumPy
+
+```sh
+sudo ln -svf libopenblas_armv7p-r0.3.19.so /usr/lib/libblas.so.3
 ```
 
 ### LCD Waveshare35
@@ -544,7 +568,7 @@ EndSection'  | sudo tee /etc/X11/xorg.conf.d/noblank.conf
 **Optionally**, if you also use HDMI along with, run this command:
 
 ```sh
-sudo sed -i "s#/dev/fb0#/dev/fb1#g" /etc/X11/xorg.conf.d/99-fbturbo.conf
+sudo sed -i "s#/dev/fb0#/dev/fb1#g" /etc/X11/xorg.conf.d/99-fbdev.conf
 ```
 
 **Reboot** using command
@@ -648,5 +672,19 @@ for raw PCM playback:
 aplay -r 44100 -f S16_LE -c 2 out.raw
 ```
 
-**Tips:** If need Python wrapper for ALSA, you can install this [AUR Package](https://aur.archlinux.org/packages/python-pyalsaaudio/)
+**Tips:** If need Python wrapper for ALSA, you can install this [AUR Package](https://aur.archlinux.org/packages/python-pyalsaaudio/) (need Python3 only)
+
+**Tips:** To maximize mic input, run **alsamixer** then press F6, select **snd_rpi_i2s_card**, then set to the max.
+
+### Python Neural Network
+
+Install packages:
+
+```sh
+export KERASPKG="
+"
+```
+
+
+
 

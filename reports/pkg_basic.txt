@@ -12,8 +12,8 @@ bind-tools netctl ppp wpa_supplicant
 tcpdump fping gnu-netcat inetutils
 net-tools bridge-utils iwd ethtool
 crda wireless_tools usb_modeswitch
+bmon mtr iw dhcp dhclient dnsmasq
 traceroute wavemon bmon nethogs
-mtr iw dhcp dhclient dnsmasq
 
 ranger lynx
 moc atool most
@@ -38,6 +38,7 @@ ttf-inconsolata
 
 sox twolame
 pulseaudio-alsa
+pulseaudio-bluetooth
 alsa-lib alsa-plugins
 alsa-utils alsa-firmware
 
@@ -48,7 +49,21 @@ python-pip python-distutils-extra
 python-numpy python-matplotlib
 python-scipy python-sounddevice
 
-tk gtk2 gtk3 python-gobject
+python-requests
+python-docutils
+python-pexpect
+python-psutil
+
+python-wxpython
+python-gobject
+wxgtk2 wxgtk3
+tk gtk2 gtk3
+webkit2gtk
+
+blueman bluez
+bluez-utils
+
+apache perl-cgi
 
 openblas cblas lapack
 git hub tig subversion
