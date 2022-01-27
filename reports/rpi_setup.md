@@ -676,15 +676,47 @@ aplay -r 44100 -f S16_LE -c 2 out.raw
 
 **Tips:** To maximize mic input, run **alsamixer** then press F6, select **snd_rpi_i2s_card**, then set to the max.
 
-### Python Neural Network
+### Python Speech/Audio Analyzer
 
-Install packages:
+##### install additional packages:
 
 ```sh
 export KERASPKG="
+python-decorator
+python-scikit-learn
+jdk8-openjdk python-joblib
+python-keras-applications
+python-keras-preprocessing
 "
+
+pacman -Sp $KERASPKG > /home/alarm/keras_pkgs.txt
 ```
 
+##### download packages (host-pc)
 
+```sh
+cp -vf ../sshmnt/keras_pkgs.txt ./
+mkdir -p packages/official/;cd packages/official/
+wget -i ../../keras_pkgs.txt
+cd ../../
 
+sudo cp keras/* /var/cache/pacman/pkg/
+```
 
+##### install packages
+
+```sh
+sudo spacman -S --noconfirm $(echo $KERASPKG)
+```
+
+##### install Python Librosa:
+
+```sh
+export LIBROSAPKG="
+librosa audioread
+soundfile resampy
+numba pooch llvmlite
+"
+
+pip3 install -v -v -v --user --no-deps $LIBROSAPKGS
+```
