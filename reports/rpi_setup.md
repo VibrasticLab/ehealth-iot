@@ -676,7 +676,7 @@ aplay -r 44100 -f S16_LE -c 2 out.raw
 
 **Tips:** To maximize mic input, run **alsamixer** then press F6, select **snd_rpi_i2s_card**, then set to the max.
 
-### Python Speech/Audio Analyzer
+### Python Speech/Audio Analyzer (RPi-4)
 
 ##### install additional packages:
 
@@ -718,5 +718,62 @@ soundfile resampy
 numba pooch llvmlite
 "
 
-pip3 install -v -v -v --user --no-deps $LIBROSAPKGS
+pip3 install -v -v -v --user --no-deps $LIBROSAPKG
+```
+
+##### install Python Tensorflow
+
+**Notes:**
+This guide here follow this list official CMake build Tensorflow Lite:
+- https://www.tensorflow.org/lite/guide/build_cmake_pip
+- https://www.tensorflow.org/lite/guide/build_cmake_arm#build_for_armv7_neon_enabled
+- https://www.tensorflow.org/lite/guide/build_cmake
+
+**Notes:** All this steps are Cross-Compiled method.
+
+**Caution:** Use this Tensorflow build only for running model inference, not build the model.
+
+First check NEON instruction set available in CPU:
+
+```sh
+cat /proc/cpuinfo
+```
+
+Then get the GCC 8 for ARM (Cross-Compile)
+
+```sh
+curl -LO https://storage.googleapis.com/mirror.tensorflow.org/developer.arm.com/media/Files/downloads/gnu-a/8.3-2019.03/binrel/gcc-arm-8.3-2019.03-x86_64-arm-linux-gnueabihf.tar.xz
+mkdir -p ${PWD}/toolchains
+tar xvf gcc-arm-8.3-2019.03-x86_64-arm-linux-gnueabihf.tar.xz -C ${PWD}/toolchains
+export ARMGCCTOOLCHAIN="${PWD}/toolchains"
+```
+
+Next, clone the the Tensoflow repository:
+
+```sh
+git clone https://github.com/tensorflow/tensorflow.git tensorflow_src
+mkdir tflite_build
+cd tflite_build
+```
+
+Run CMake to generate configurations:
+
+```sh
+ARMCC_FLAGS="-march=armv7-a -mfpu=neon-vfpv4 -funsafe-math-optimizations"
+ARMCC_PREFIX=$ARMGCCTOOLCHAIN/gcc-arm-8.3-2019.03-x86_64-arm-linux-gnueabihf/bin/arm-linux-gnueabihf-
+
+cmake -DCMAKE_C_COMPILER=${ARMCC_PREFIX}gcc \
+  -DCMAKE_CXX_COMPILER=${ARMCC_PREFIX}g++ \
+  -DCMAKE_C_FLAGS="${ARMCC_FLAGS}" \
+  -DCMAKE_CXX_FLAGS="${ARMCC_FLAGS}" \
+  -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON \
+  -DCMAKE_SYSTEM_NAME=Linux \
+  -DCMAKE_SYSTEM_PROCESSOR=armv7 \
+  ../tensorflow_src/tensorflow/lite
+```
+
+Try to build:
+
+```sh
+cmake --build . -j$(nproc) -t label_image
 ```

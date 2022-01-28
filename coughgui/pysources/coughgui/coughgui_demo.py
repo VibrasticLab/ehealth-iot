@@ -35,6 +35,9 @@ class CoughTk():
     RecRun = 0
     RecFlag = False
 
+    RunGraph = True
+    RunSendWav = True
+
     ServerTarget = "http://103.147.32.143"
     EdgeIP = "0.0.0.0"
 
@@ -194,6 +197,7 @@ class CoughTk():
                         self.RawOut.write(indata)
                     else:
                         self.RecFlag = False
+                        self.RunGraph = False
                         self.RawOut.flush()
                         self.RawOut.close()
 
@@ -205,10 +209,12 @@ class CoughTk():
 
                         txtsendwav = "Send Wav: " + "Active"
                         self.sttsendwav.config(text=txtsendwav)
-                        self.sendrecord()
+                        if self.RunSendWav:
+                            self.sendrecord()
                         txtsendwav = "Send Wav: " + "Inactive"
                         self.sttsendwav.config(text=txtsendwav)
 
+                        self.RunGraph = True
                         with open(self.RecFileStatus,"w") as f:
                             f.write('false')
                 else:
@@ -216,7 +222,7 @@ class CoughTk():
                         RecStt = stt.read()
 
                     if RecStt == 'true':
-                        self.RecRun = 200
+                        self.RecRun = 200 # 3 seconds recording
                         txtrecord = "Recording: " + "Active"
                         self.sttrecord.config(text=txtrecord)
                         with open(self.RecFileRaw,"w") as out:
@@ -229,7 +235,8 @@ class CoughTk():
     def graphupdate(self,args):
         """ Refresh Plot using new data"""
 
-        self.line.set_data(self.X,self.Y)
+        if self.RunGraph:
+            self.line.set_data(self.X,self.Y)
 
 if __name__ == "__main__":
     cough = CoughTk()
