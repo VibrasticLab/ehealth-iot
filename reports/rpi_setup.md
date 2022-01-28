@@ -298,7 +298,7 @@ locale-gen
 ### Disable sudo passwords
 
 ```sh
-echo "%wheel ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoersecho
+echo "%wheel ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 passwd -d root
 passwd -d alarm
 ```
@@ -593,7 +593,7 @@ startx /usr/bin/python3 gtkpython
 
 These instructions specificly using INMP441 I2S Microphone.
 
-First install I2S Microphone kernel module from [here](https://github.com/mekatronik-achmadi/archmate/tree/master/embedded/raspberrypi/drivers/i2smems/)
+First install **I2S Microphone kernel module** from [here](https://github.com/mekatronik-achmadi/archmate/tree/master/embedded/raspberrypi/drivers/i2smems/)
 
 Next run this command to add these configuration into config.txt
 
@@ -640,7 +640,7 @@ pcm.dmic_sv {
 " | tee $HOME/.asoundrc
 ```
 
-Then run this command for short period time (CTRL+Z to stop):
+Then run this command once for short period time (CTRL+Z to stop):
 
 ```sh
 arecord -D dmic_sv -c2 -r 44100 -f S16_LE -t wav -V mono -v record.wav
@@ -678,102 +678,45 @@ aplay -r 44100 -f S16_LE -c 2 out.raw
 
 ### Python Speech/Audio Analyzer (RPi-4)
 
-##### install additional packages:
+##### install Librosa packages:
 
-```sh
-export KERASPKG="
-python-decorator
-python-scikit-learn
-jdk8-openjdk python-joblib
-python-keras-applications
-python-keras-preprocessing
-"
-
-pacman -Sp $KERASPKG > /home/alarm/keras_pkgs.txt
-```
-
-##### download packages (host-pc)
-
-```sh
-cp -vf ../sshmnt/keras_pkgs.txt ./
-mkdir -p packages/official/;cd packages/official/
-wget -i ../../keras_pkgs.txt
-cd ../../
-
-sudo cp keras/* /var/cache/pacman/pkg/
-```
-
-##### install packages
-
-```sh
-sudo spacman -S --noconfirm $(echo $KERASPKG)
-```
-
-##### install Python Librosa:
+First create URL packages
 
 ```sh
 export LIBROSAPKG="
+python-joblib
+python-decorator
+python-scikit-learn
+"
+
+pacman -Sp $LIBROSAPKG > /home/alarm/librosa_pkg.txt
+```
+
+Then download packages in x86_64 laptop and copy them to mounted MMC
+
+```sh
+cp -vf ../sshmnt/librosa_pkg.txt ./
+mkdir -p packages/official/;cd packages/official/
+wget -i ../../librosa_pkg.txt
+cd ../../
+
+sudo rsync -avh package/official/ /mnt/root/var/cache/pacman/pkg/
+```
+
+Next install them
+
+```sh
+sudo pacman -S --noconfirm $(echo $LIBROSAPKG)
+```
+
+Last, install Librosa using PIP since their binaries are not available in ALARM and AUR repositories.
+
+```sh
+export LIBROSAPIP="
 librosa audioread
 soundfile resampy
 numba pooch llvmlite
 "
 
-pip3 install -v -v -v --user --no-deps $LIBROSAPKG
-```
-
-##### install Python Tensorflow
-
-**Notes:**
-This guide here follow this list official CMake build Tensorflow Lite:
-- https://www.tensorflow.org/lite/guide/build_cmake_pip
-- https://www.tensorflow.org/lite/guide/build_cmake_arm#build_for_armv7_neon_enabled
-- https://www.tensorflow.org/lite/guide/build_cmake
-
-**Notes:** All this steps are Cross-Compiled method.
-
-**Caution:** Use this Tensorflow build only for running model inference, not build the model.
-
-First check NEON instruction set available in CPU:
-
-```sh
-cat /proc/cpuinfo
-```
-
-Then get the GCC 8 for ARM (Cross-Compile)
-
-```sh
-curl -LO https://storage.googleapis.com/mirror.tensorflow.org/developer.arm.com/media/Files/downloads/gnu-a/8.3-2019.03/binrel/gcc-arm-8.3-2019.03-x86_64-arm-linux-gnueabihf.tar.xz
-mkdir -p ${PWD}/toolchains
-tar xvf gcc-arm-8.3-2019.03-x86_64-arm-linux-gnueabihf.tar.xz -C ${PWD}/toolchains
-export ARMGCCTOOLCHAIN="${PWD}/toolchains"
-```
-
-Next, clone the the Tensoflow repository:
-
-```sh
-git clone https://github.com/tensorflow/tensorflow.git tensorflow_src
-mkdir tflite_build
-cd tflite_build
-```
-
-Run CMake to generate configurations:
-
-```sh
-ARMCC_FLAGS="-march=armv7-a -mfpu=neon-vfpv4 -funsafe-math-optimizations"
-ARMCC_PREFIX=$ARMGCCTOOLCHAIN/gcc-arm-8.3-2019.03-x86_64-arm-linux-gnueabihf/bin/arm-linux-gnueabihf-
-
-cmake -DCMAKE_C_COMPILER=${ARMCC_PREFIX}gcc \
-  -DCMAKE_CXX_COMPILER=${ARMCC_PREFIX}g++ \
-  -DCMAKE_C_FLAGS="${ARMCC_FLAGS}" \
-  -DCMAKE_CXX_FLAGS="${ARMCC_FLAGS}" \
-  -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON \
-  -DCMAKE_SYSTEM_NAME=Linux \
-  -DCMAKE_SYSTEM_PROCESSOR=armv7 \
-  ../tensorflow_src/tensorflow/lite
-```
-
-Try to build:
-
-```sh
-cmake --build . -j$(nproc) -t label_image
+pip3 install -v -v -v --user --no-deps $LIBROSAPIP
 ```
