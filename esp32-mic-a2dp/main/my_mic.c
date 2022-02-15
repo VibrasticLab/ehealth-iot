@@ -1,5 +1,10 @@
 /**
  * example in use: https://www.esp32.com/viewtopic.php?t=15185
+ *
+ * If you'd like to play them back to the built-in DAC,
+ * what i've found is that the DAC expects non-signed samples,
+ * so basically you cast each sample to an int32_t,
+ * add 0x8000, then cast back to a uint16_t.
  */
 
 #include <stdint.h>
