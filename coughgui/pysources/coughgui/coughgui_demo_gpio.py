@@ -44,15 +44,11 @@ class CoughTk():
 
     RecFileRaw = "/home/alarm/out.raw"
     RecFileWav = "/home/alarm/out.wav"
-    RecFileStatus = "/home/alarm/record_status"
+    RecFileStatus = "/sys/class/gpio/gpio12/value"
     RecServer = ServerName + "/api/device/sendData/303"
 
     def __init__(self):
         super(CoughTk, self).__init__()
-
-        # Create record control file
-        with open(self.RecFileStatus,"w") as f:
-            f.write('false')
 
         # Main Window
         self.window = tk.Tk()
@@ -216,13 +212,11 @@ class CoughTk():
                         self.sttsendwav.config(text=txtsendwav)
 
                         self.RunGraph = True
-                        with open(self.RecFileStatus,"w") as f:
-                            f.write('false')
                 else:
                     with open(self.RecFileStatus, "r") as stt:
-                        RecStt = stt.read()
+                        RecStt = stt.read().strip()
 
-                    if RecStt == 'true':
+                    if RecStt == '1':
                         self.RecRun = 200 # 3 seconds recording
                         txtrecord = "Recording: " + "Active"
                         self.sttrecord.config(text=txtrecord)
