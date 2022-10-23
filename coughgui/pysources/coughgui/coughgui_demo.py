@@ -38,13 +38,14 @@ class CoughTk():
     RunGraph = True
     RunSendWav = True
 
-    ServerTarget = "http://103.147.32.143"
+    ServerTarget = "http://27.112.78.108"
+    ServerName = "https://elbicare.my.id"
     EdgeIP = "0.0.0.0"
 
     RecFileRaw = "/home/alarm/out.raw"
     RecFileWav = "/home/alarm/out.wav"
     RecFileStatus = "/home/alarm/record_status"
-    RecServer = ServerTarget + "/api/device/sendData/303"
+    RecServer = ServerName + "/api/device/sendData/303"
 
     def __init__(self):
         super(CoughTk, self).__init__()
@@ -85,7 +86,7 @@ class CoughTk():
         self.lblconn.pack(side=tk.BOTTOM)
 
         # Status Server
-        self.sttserver = tk.Label(self.infofrm, text=self.ServerTarget)
+        self.sttserver = tk.Label(self.infofrm, text=self.ServerName)
         self.sttserver.config(font=wndfont)
         self.sttserver.pack(side=tk.BOTTOM)
 
