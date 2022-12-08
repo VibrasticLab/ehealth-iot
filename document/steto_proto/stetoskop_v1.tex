@@ -1,0 +1,100 @@
+\documentclass[a4paper,12pt,oneside,pdflatex,italian,final,twocolumn]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage{parallel}
+\usepackage{siunitx}
+\usepackage{booktabs}
+\usepackage{fancyhdr}
+\usepackage{subcaption}
+\usepackage{listings}
+\usepackage{hyperref}
+\usepackage{pdfpages}
+
+\usepackage[export]{adjustbox}
+\usepackage[margin=0.5in]{geometry}
+\addtolength{\topmargin}{0in}
+
+\usepackage{libertine}
+\renewcommand*\familydefault{\sfdefault}
+\usepackage[T1]{fontenc}
+
+\title{Portable Bluetooth Stetoscope}
+\author{Achmadi ST MT}
+\date{Desember 2022}
+
+\begin{document}
+	
+	\pagestyle{fancy}
+	
+	\lhead{VibrasticLab}
+	\chead{\today}
+	\rhead{Specification Document v1.0}
+	
+	\onecolumn
+	
+	\begin{figure}
+		
+	\end{figure}\begin{minipage}{0.47\textwidth}
+		\centering
+		
+	\end{minipage}
+	\hfill
+	\begin{minipage}{0.47\textwidth}
+		\raggedleft
+		\Huge \textbf{Portable Bluetooth Stetoscope}
+	\end{minipage}
+
+	\section{Overview}
+	
+	\begin{itemize}
+		\item Fowarding Audio from I2S Microphone (based on INMP441) to any A2DP Compatible Audio Sink.
+		
+		\item Provides spesific frequency capture using 3D printed stetoscope head
+		
+		\item Battery operated using embedded system approach using ESP32 as the core
+		
+		\item The design currently in very early stage and not for end usage
+		
+	\end{itemize}
+	
+	\raggedright
+	\section{MockUp 3D}
+	
+	Mock up 3D of the prototype without outer case (except stetoscope head)
+	
+	\centering
+	\begin{figure}[!ht]
+		\centering
+		\includegraphics[width=\textwidth,]{images/steto_overview.png}
+		\caption{Prototype Unit}
+	\end{figure}
+
+	\raggedright
+	\section{PCB Design}
+
+	Current PCB Schematic and Layout Design
+	
+	\newpage
+	\includepdf[pages=-,angle=-90]{pdf/esp32steto_sch.pdf}
+	
+	\newpage
+	\includepdf[pages=-,angle=-90]{pdf/esp32steto_pcb.pdf}
+	
+	\newpage
+	\includepdf[pages=-,angle=180]{pdf/esp32steto_bom.pdf}
+	
+	\newpage
+	\section{Unit Cost Estimation}
+	
+	\begin{tabular}{|l|l|l|}
+		\toprule
+		Item & Price & URL \\
+		\midrule
+		RaspberryPi-4 & Rp. 2.220.000 & \href{https://digiwarestore.com/en/raspberry-board/raspberry-pi-4-ram-2gb-made-in-uk-mini-pc-raspi-4-442339.html}{Digiware} \\
+		\midrule
+		Total & Rp. 2.860.400 & - \\
+		\bottomrule
+	\end{tabular}
+
+\end{document}
+

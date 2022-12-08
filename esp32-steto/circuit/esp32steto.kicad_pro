@@ -384,8 +384,8 @@
       "idf": "",
       "netlist": "",
       "specctra_dsn": "",
-      "step": "",
-      "vrml": ""
+      "step": "exports/step3d/esp32steto.step",
+      "vrml": "exports/mockup3d/esp32steto.wrl"
     },
     "page_layout_descr_file": ""
   },
