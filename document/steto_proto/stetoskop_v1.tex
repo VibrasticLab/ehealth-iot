@@ -18,6 +18,14 @@
 \renewcommand*\familydefault{\sfdefault}
 \usepackage[T1]{fontenc}
 
+\urlstyle{sf}
+\hypersetup{
+	colorlinks=true, %set true if you want colored links
+	linktoc=all,     %set to all if you want both sections and subsections linked
+	linkcolor=blue,  %choose some color if you want links to stand out
+	urlcolor=blue,   %url color
+}
+
 \title{Portable Bluetooth Stetoscope}
 \author{Achmadi ST MT}
 \date{Desember 2022}
@@ -84,15 +92,49 @@
 	\includepdf[pages=-,angle=180]{pdf/esp32steto_bom.pdf}
 	
 	\newpage
-	\section{Unit Cost Estimation}
+	\section{Project Repositories}
+	
+	List of Project Repositories:
+	\begin{itemize}
+		\item KiCAD Circuit Design: \\
+		\url{https://github.com/VibrasticLab/ehealth-iot/tree/master/esp32-steto/circuit}
+		
+		\item ESP-IDF Firmware Draft: \\
+		\url{https://github.com/VibrasticLab/ehealth-iot/tree/master/esp32-mic-a2dp}
+		
+		\item Stetoscope Open Design: \\
+		\url{https://github.com/GliaX/Stethoscope}
+	\end{itemize}
+	
+	\section{Electronic Unit Cost Estimation}
 	
 	\begin{tabular}{|l|l|l|}
 		\toprule
-		Item & Price & URL \\
+		Item & Price-Qty & URL \\
 		\midrule
-		RaspberryPi-4 & Rp. 2.220.000 & \href{https://digiwarestore.com/en/raspberry-board/raspberry-pi-4-ram-2gb-made-in-uk-mini-pc-raspi-4-442339.html}{Digiware} \\
+		ESP32 WROOM 32 & Rp. 47.900 & \href{https://www.tokopedia.com/altrosurabaya/esp-wroom-32-esp32-wifi-bt-ble-mcu-module-only-smd-smt}{Tokopedia} \\
+		AMS117-3v3 & Rp 1.200 & \href{https://www.tokopedia.com/radioshop/ams117-ams117-3-3v-ams117-3v3-ams117-3-3-smd-regulator-chipset}{Tokopedia} \\
+		Mic INMP441 & Rp. 42.000 & \href{https://www.tokopedia.com/easyware-id/inmp441-omnidirectional-microphone-module-mems-i2s-interface}{Tokopedia} \\
+		LCD OLED SSD1306 & Rp. 33.000 & \href{https://www.tokopedia.com/easyware-id/oled-128x64-lcd-i2c-spi-0-96-inch-white-blue-yellow-blue-backlight-i2c-yellow-blue}{Tokopedia} \\
+		PCB Prototyping & Rp. 200.000 & \href{https://www.tokopedia.com/geraicerdas/cetak-pcb-1-keping-single-double-layer-rapid-prototyping-satuan}{Tokopedia} \\
+		Tombol/LED/Passives & Rp. 200.000 & Pasar Genteng Surabaya \\
+		Wire dkk & Rp. 50.000 & Pasar Genteng Surabaya \\
+		Ongkir Tokopedia & Rp. 100.000 & - \\
 		\midrule
-		Total & Rp. 2.860.400 & - \\
+		Total & Rp. 674.100  & - \\
+		\bottomrule
+	\end{tabular}
+
+	\section{Case/Head Development Estimation}
+	
+	\begin{tabular}{|l|l|l|}
+		\toprule
+		Item & Price-Qty & URL \\
+		\midrule
+		3D Printer Kingroon & Rp. 2.450.000 & \href{https://www.tokopedia.com/3dzaiku/3d-printer-kingroon-kp3s-new-linear-rail-direct-drive-32-bit-tmc2225}{Tokopedia} \\
+		Fimalent Material & Rp. 700.000 & \href{https://www.tokopedia.com/3dzaiku/esun-3d-filament-terbaru-silk-pla-1-75-mm}{Tokopedia} \\
+		\midrule
+		Total & Rp. 3.150.000  & - \\
 		\bottomrule
 	\end{tabular}
 
