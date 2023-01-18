@@ -51,7 +51,7 @@ sudo cp -vf waveshare35a.dtbo /boot/overlays/
 
 echo "
 dtparam=spi=on
-dtoverlay=waveshare35a:rotate=270,swapxy=1" | sudo tee -a /boot/config.txt
+dtoverlay=waveshare35a:rotate=180,swapxy=1" | sudo tee -a /boot/config.txt
 
 sudo sed -i '$s/$/ fbcon=font:ProFont6x11/' /boot/cmdline.txt
 ```
