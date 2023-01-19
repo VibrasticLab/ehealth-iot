@@ -1,3 +1,3 @@
 #!/bin/bash
 
-~/randomplot/randomplot.sh | ttyplot -t 'Audio Data Random'
+~/dummy/randomplot.sh | ttyplot -t 'Audio Data Random'

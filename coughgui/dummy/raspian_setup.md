@@ -38,7 +38,7 @@ sudo apt-get install git tig vim mc tmux fonts-terminus libncurses-dev
 ```sh
 git clone https://github.com/tenox7/ttyplot.git
 cd ttyplot/
-make
+make -j$(nproc)
 sudo cp -vf ./ttyplot /usr/bin/
 ```
 
@@ -89,6 +89,10 @@ sudo passwd -d $USER
 ## Dummy Program
 
 ```sh
+mkdir -p ~/dummy/;cd ~/dummy/
+wget -c https://raw.githubusercontent.com/VibrasticLab/ehealth-iot/master/coughgui/dummy/randomplot/main.sh
+wget -c https://raw.githubusercontent.com/VibrasticLab/ehealth-iot/master/coughgui/dummy/randomplot/randomplot.sh
+
 echo '
 [[ -f ~/.bashrc ]] && . ~/.bashrc
 source ~/.bashrc
@@ -98,7 +102,7 @@ if [ -n "$SSH_CLIENT" ] || [ -n "$SSH_TTY" ]; then
 else
     if [ -z "${DISPLAY}" ] && [ "${XDG_VTNR}" -eq 1 ]; then
         #true
-        ~/randomplot/main.sh
+        ~/dummy/main.sh
     fi
 fi' | tee $HOME/.bash_profile
 ```
