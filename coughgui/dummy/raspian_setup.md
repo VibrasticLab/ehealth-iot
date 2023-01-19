@@ -33,15 +33,6 @@ ssh username@ip-number
 sudo apt-get install git tig vim mc tmux fonts-terminus libncurses-dev
 ```
 
-## Build TTYPlot
-
-```sh
-git clone https://github.com/tenox7/ttyplot.git
-cd ttyplot/
-make -j$(nproc)
-sudo cp -vf ./ttyplot /usr/bin/
-```
-
 ## Display Configs
 
 ```sh
@@ -86,12 +77,23 @@ FONT_MAP=8859-2
 sudo passwd -d $USER
 ```
 
+## Build TTYPlot
+
+```sh
+git clone https://github.com/tenox7/ttyplot.git
+cd ttyplot/
+make -j$(nproc)
+sudo cp -vf ./ttyplot /usr/bin/
+```
+
 ## Dummy Program
 
 ```sh
 mkdir -p ~/dummy/;cd ~/dummy/
 wget -c https://raw.githubusercontent.com/VibrasticLab/ehealth-iot/master/coughgui/dummy/randomplot/main.sh
 wget -c https://raw.githubusercontent.com/VibrasticLab/ehealth-iot/master/coughgui/dummy/randomplot/randomplot.sh
+
+chmod a+x ./*.sh
 
 echo '
 [[ -f ~/.bashrc ]] && . ~/.bashrc
