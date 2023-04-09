@@ -1,9 +1,0 @@
-Makefile
-user/client.c
-user/client.h
-user/drv_uart.c
-user/drv_gpio16.c
-user/user.c
-user/user_config.h
-user/wifi_sta.c
-user/wifi_sta.h
