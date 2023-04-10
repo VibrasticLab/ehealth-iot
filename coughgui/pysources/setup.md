@@ -31,9 +31,6 @@ sshfs alarm@10.124.4.230:/home/alarm sshmnt/
 
 ## Install Additional Infrastructures
 
-### Python Packages
-- https://github.com/mekatronik-achmadi/archmate/blob/master/notes/embedded/raspberry/guides/archmate/pkg_python.txt
-
 ### I2S MEMS driver
 - https://aur.archlinux.org/packages/python-pyalsaaudio/ (Remove all Python2 setup)
 - https://github.com/mekatronik-achmadi/archmate/tree/master/notes/embedded/raspberry/drivers/i2smems
