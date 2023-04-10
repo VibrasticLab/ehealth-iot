@@ -38,14 +38,15 @@ class CoughTk():
     RunGraph = True
     RunSendWav = True
 
-    ServerTarget = "http://27.112.78.108"
+    ServerTarget = "http://10.124.3.221"
     ServerName = "https://elbicare.my.id"
     EdgeIP = "0.0.0.0"
 
     RecFileRaw = "/home/alarm/out.raw"
     RecFileWav = "/home/alarm/out.wav"
     RecFileStatus = "/sys/class/gpio/gpio12/value"
-    RecServer = ServerName + "/api/device/sendData/303"
+    #RecServer = ServerName + "/api/device/sendData_Naracoba/303"
+    RecServer = ServerTarget + "/api/device/sendData_Naracoba/303"
 
     def __init__(self):
         super(CoughTk, self).__init__()
