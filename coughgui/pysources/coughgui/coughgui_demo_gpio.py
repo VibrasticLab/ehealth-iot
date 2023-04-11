@@ -45,8 +45,11 @@ class CoughTk():
     RecFileRaw = "/home/alarm/out.raw"
     RecFileWav = "/home/alarm/out.wav"
     RecFileStatus = "/sys/class/gpio/gpio12/value"
-    #RecServer = ServerName + "/api/device/sendData_Naracoba/303"
-    RecServer = ServerTarget + "/api/device/sendData_Naracoba/303"
+
+    RecTarget = ServerTarget
+    #RecTarget = ServerName
+
+    RecServer = RecTarget + "/api/device/sendData_Naracoba/303"
 
     def __init__(self):
         super(CoughTk, self).__init__()
@@ -83,7 +86,7 @@ class CoughTk():
         self.lblconn.pack(side=tk.BOTTOM)
 
         # Status Server
-        self.sttserver = tk.Label(self.infofrm, text=self.ServerName)
+        self.sttserver = tk.Label(self.infofrm, text=self.RecTarget)
         self.sttserver.config(font=wndfont)
         self.sttserver.pack(side=tk.BOTTOM)
 
