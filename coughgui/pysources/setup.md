@@ -42,10 +42,11 @@ Reboot the unit
 
 ### GPIO Setup
 
-Copy **pysources/gpio_config.sh** and **pysources/record_start.sh** to **/home/alarm/**.
+Copy **pysources/gpio_config.sh**,  **pysources/mic_set.sh**, and **pysources/record_start.sh** to **/home/alarm/**.
 Then test the program script using command:
 
 ```sh
+bash /home/alarm/mic_set.sh 100
 bash /home/alarm/gpio_config.sh
 ```
 
