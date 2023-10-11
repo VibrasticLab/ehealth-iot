@@ -15,3 +15,23 @@ Here some Python example for processing audio example: [Notebook](https://github
 Coming to Public Health Care:
 
 <img src="./images/20231006_071643.jpg" style="width: 250px;"/>
+
+Form of Consent:
+
+<img src="./images/IMG-20231006-WA0013.jpg" style="width: 250px;"/>
+
+Briefing:
+
+<img src="./images/IMG-20231006-WA0009.jpg" style="width: 250px;"/>
+
+Cough Sampling:
+
+<img src="./images/20231006_103510.jpg" style="width: 250px;"/>
+
+<img src="./images/IMG-20231006-WA0010.jpg" style="width: 250px;"/>
+
+<img src="./images/IMG-20231006-WA0011.jpg" style="width: 250px;"/>
+
+Personels:
+
+<img src="./images/20231006_083502.jpg" style="width: 250px;"/>
