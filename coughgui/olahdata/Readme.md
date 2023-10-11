@@ -2,7 +2,7 @@
 
 ## Data Collection Directory
 - Lab (June 2023): [Directory](https://github.com/VibrasticLab/ehealth-iot/tree/master/coughgui/olahdata/normal/lab_062023).
-- Probolinggo (October 2023: [Directory](https://github.com/VibrasticLab/ehealth-iot/tree/master/coughgui/olahdata/normal/probo_07102023).
+- Probolinggo (October 2023): [Directory](https://github.com/VibrasticLab/ehealth-iot/tree/master/coughgui/olahdata/normal/probo_07102023).
 
 ## Processing Example
 
@@ -35,3 +35,7 @@ Cough Sampling:
 Personels:
 
 <img src="./images/20231006_083502.jpg" style="width: 250px;"/>
+
+### Lab
+
+Not Found
