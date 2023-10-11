@@ -14,4 +14,4 @@ Here some Python example for processing audio example: [Notebook](https://github
 
 Coming to Public Health Care:
 
-![image](images/20231006_071643.jpg)
+<img src="./images/20231006_071643.jpg" style="width: 250px;"/>
